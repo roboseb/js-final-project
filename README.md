@@ -1,70 +1,23 @@
-# Getting Started with Create React App
+#js-final-project
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+---Devlog---
 
-## Available Scripts
+July 15th, 2022
 
-In the project directory, you can run:
+    Had some solid ideas for the final project, then went to create the app to find that I had run out of disk space, which is crazy. I actually managed to use up 20gb of just web dev projects. Anyway, some furious googling and dicking around with storage allocation later, I've got plenty of space for the next projects.
 
-### `npm start`
+    The outline for this project is to recreate my favourite website. I don't really know what my favourite site is, maybe YouTube? That would be an insane amount of work, take a ton of hosting space, and then what would be on there? Random videos that I upload, since the site is literally not gonna be used by anyone else. TOP also suggests making facebook, twitter or pinterest. Again, these are interesting ideas, but why spend all this effort creating a proper website that even in theory no one would have a reason to use.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+    I'm pretty sure the purpose of this project is just to make a larger scale project than those previous. Or at least that's how I'm gonna interpret it. So as usual, I'll make something that differs from the outline by creating a largely original site.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+    You know about NFTs. Or at least you heard about them. Collectible things on the blockchain. Here's the thing, the blockchan has been touted as a way to have some nebulous sense of owning things on the internet in a more real way than we have for decades. Your steam library? You don't own that silly. Your CSGO guns? Those aren't REALLY yours. Your WOW account and all its stuff? Fake. Runescape items? More like poofake items. But look at my bitcoin! It's super real, if you ignore that I forgot my password and there is way to access it for as long as I live now. Ah shit, some guy just funged it.
 
-### `npm test`
+    I'm not personally against the idea of these things existing, but there's an insane amount of misinformation surrounding them, I assume largely for the profit of those with holdings in NFTs and crypto. So my site will be a form of parody of all that. With the magic of APIs, I can give people free access to a gamefied NFT marketplace. And maybe make some crypto bros seethe. Hell, if it's illegal somehow and I get sued, that'll be pretty solid publicity. Imagine club penguin, where you play games to collect coins, but then you can use those coins to buy/sell/trade identical copies of the most popular NFTs. Markets of all kinds are super interesting to me, and being able to play around with the volatile nature of the blockchain ecosystem in a loss-free space sounds like so much fun. 
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+    Main API fetch for the NFTs is done. Not sure how I'll do pricing yet, but I've got a solid base. Tomorrow will start with adding the ability to buy/sell these boys. Might have to implement firebase pretty early on here.
 
-### `npm run build`
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+---To-Do---
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+-Avatar generator
