@@ -4,43 +4,64 @@ body {
 
 #app {
     height: 100vh;
+    max-height: 100vh;
     width: 100vw;
 
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
+    display: grid;
+    grid-template-columns: 100vw;
+    grid-template-rows: 10vh 1fr 25vw;
 }
 
 #header {
     background-color: teal;
-    position: fixed;
     width: 100vw;
-    
+    flex-grow: 1;
+    position: relative;
+
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+#header>img {
+    position: absolute;
     top: 0;
-    left: 0;
-    z-index: 1;
+    right: 0;
+
+    height: 50px;
+}
+
+#header>#coins {
+    font-size: 2.5rem;
+}
+
+#accountinfo {
+
+}
+
+#accountinfo>img {
+    height: 50px;
 }
 
 #navbar {
     width: 100vw;
-    height: 25vw;
 
-    position: fixed;
-    bottom: 0;
-    left: 0;
+    flex-grow: 1;
     display: flex;
     background-color: red;
 }
 
-#navbar>.navitem {
+.navitem {
     flex-grow: 1;
     border: 5px solid black;
+
+
 }
 
 #assets, #market {
-    flex-grow: 1;
-
+    overflow: scroll;
     background-color: goldenrod;
+    flex-grow: 1;
 }
 
 #nftcontainer {
@@ -77,4 +98,8 @@ body {
 
 .nftitem>.nftinfo.shown {
     filter: opacity(1);
+}
+
+.nftitem button {
+    pointer-events: all;
 }

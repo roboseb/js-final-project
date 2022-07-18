@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import uniqid from "uniqid";
 
-const Market = () => {
+const Market = (props) => {
     const fetchNfts = () => {
         console.log('fetching');
 
@@ -34,16 +34,16 @@ const Market = () => {
 
         getNfts()
             .then(response => {
-                console.log(response);
+                //console.log(response);
 
                 const nfts = response['nfts']
 
-                let i = 1
+                nfts.forEach((item) => {
+                    item.price = 1000;
+                })
 
                 setApes(nfts);
                 setImg(nfts[0]['media'][0]['gateway']);
-
-                console.log(nfts[0]);
             })
             .catch(error => console.log('error', error))
     }
@@ -57,14 +57,31 @@ const Market = () => {
     }, []);
 
     const toggleInfo = (e, data) => {
-        //console.log(e, data);
+        console.log(e.target, data);
 
         const box = e.target.parentElement;
         const info = box.querySelector('.nftinfo');
 
-        console.log(info);
+        //console.log(info);
 
         info.classList.toggle('shown');
+    }
+
+    //Attempt to buy the targeted NFT.
+    const buyNft = (e, info) => {
+        console.log(info);
+
+        //Remove coins from the user equal to the NFT price if they
+        //can afford it.
+
+        if (props.coins >= info.price) {
+            console.log('purchased!')
+            props.updateCoins(info.price * -1);
+        } else {
+            console.log("can't afford!")
+        }
+        
+
     }
 
 
@@ -73,17 +90,20 @@ const Market = () => {
 
             <div id='nftcontainer'>
                 {apes.map((item, index) => {
-                    return <div className='nftitem' onClick={e => toggleInfo(e, item)}>
+                    return <div className='nftitem'  key={uniqid()}>
                         <img 
                             src={item['media'][0]['gateway']} 
                             alt=""
-                            key={uniqid()}
+                            onClick={e => toggleInfo(e, item)}
                         ></img>
 
                         <div className='nftinfo'>
                             {item.metadata.attributes.map((item) => {
                                 return <div key={uniqid()}>{item['trait_type']}:{item['value']}</div>
                             })}
+                            <div>{item.price} coins</div>
+                            <button onClick={e => buyNft(e, item)}>Buy</button>
+
                           
                         </div>
                     </div>

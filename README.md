@@ -16,8 +16,22 @@ July 15th, 2022
 
     Main API fetch for the NFTs is done. Not sure how I'll do pricing yet, but I've got a solid base. Tomorrow will start with adding the ability to buy/sell these boys. Might have to implement firebase pretty early on here.
 
+July 16th, 2022
+
+    Fixed the basic layout, which was honestly a bigger mental hurdle than I thought it would be. Gonna add react router dom now.
+
+July 17th, 2022
+
+    Yesterday I added the router and then got tired and played Bug Fables. Today, I'm armed with my Rockstar and am ready to rock this. Now it's time for what may be the most complicated, being able to make accounts and then track those accounts with firebase. 
+
 
 
 ---To-Do---
 
 -Avatar generator
+-market loading animation
+-keep market loaded in once loaded once
+-money system
+-firebase connectivity
+-remove firestore test mode
+-have app remember redirect/sign in
