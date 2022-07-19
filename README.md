@@ -24,6 +24,13 @@ July 17th, 2022
 
     Yesterday I added the router and then got tired and played Bug Fables. Today, I'm armed with my Rockstar and am ready to rock this. Now it's time for what may be the most complicated, being able to make accounts and then track those accounts with firebase. 
 
+July 18th, 2022
+
+    Felt like I wasn't going to get much done yesterday. Managed to work the full day, and looking back at what I got done, I'm feeling pretty good. Both firestore and google auth are more or less working as intended, which might end up being some of the most technical parts of this project. Now to store these damn apes in the firestore, allowing me to skip the API call. I think.
+
+    Apes are now stored in the firestore. At least 100 of them are. Should be plenty for my current purposes.
+
+    Things are going shockingly well. You can now spend coins to buy apes, and then have them move to your own inventory and removed from the market firestore db. It all works more or less as intended. Once you're able to put them back up for sale and have that money enter your account, I can start coming up with some simple games.
 
 
 ---To-Do---
@@ -35,3 +42,6 @@ July 17th, 2022
 -firebase connectivity
 -remove firestore test mode
 -have app remember redirect/sign in
+-ability to add your own apes back to market 
+-custom listing price for apes
+-fix ape list/unlist button 

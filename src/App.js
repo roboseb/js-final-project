@@ -6,10 +6,11 @@ import Assets from "./components/Assets";
 import Market from "./components/Market";
 import Header from "./components/Header";
 import Settings from "./components/Settings";
+import Games from "./components/Games";
 
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
-import { getFirestore, collection, getDoc, getDocs, addDoc, setDoc, updateDoc, doc } from 'firebase/firestore';
+import { getFirestore, collection, getDoc, getDocs, addDoc, deleteDoc, setDoc, updateDoc, doc } from 'firebase/firestore';
 import { GoogleAuthProvider, getAuth, signInWithRedirect, getRedirectResult, onAuthStateChanged} from "firebase/auth";
 import { getDatabase, ref, set, get, child } from "firebase/database";
 
@@ -37,6 +38,8 @@ function App() {
 
     const [userInfo, setUserInfo] = useState(null);
     const [coins, setCoins] = useState(0);
+    const [apes, setApes] = useState([]);
+    const [userApes, setUserApes] = useState([]);
 
     //Load user info once the data has been updated.
     onAuthStateChanged(auth, (user) => {
@@ -46,6 +49,8 @@ function App() {
             //console.log('signed in')
 
             const userData = getAuth().currentUser; 
+
+            console.log(userData);
 
             //Update session's user info and load their data.
             setUserInfo(userData);
@@ -70,16 +75,18 @@ function App() {
             const uid = userInfo.uid;
             console.log(uid);
 
-            await setDoc(doc(db, 'users', uid), {
-                email: userInfo.email,
-                coins: coins
+            const docRef = doc(db, "users", uid);
+
+            // Set the "capital" field of the city 'DC'
+            await updateDoc(docRef, {
+              coins: coins
             });
         }
 
         if (userInfo !== null) {
             updateCash();
         }
-    }, [coins])
+    }, [coins]);
 
     //Load a user's data if signed in.
     async function loadData() {
@@ -91,8 +98,11 @@ function App() {
         const docSnap = await getDoc(docRef);
 
         if (docSnap.exists()) {
-            console.log("Document data:", docSnap.data());
+            //console.log("Document data:", docSnap.data());
             setCoins(docSnap.data().coins);
+            setUserApes(docSnap.data().apes);
+
+            console.log("user's apes:" + docSnap.data().apes);
 
         } else {
 
@@ -118,6 +128,149 @@ function App() {
         //console.log(auth);
     }
 
+    //Take NFT api data and save relevant info to firestore.
+    const saveApes = (apes) => {
+        //console.log(apes[0]);
+
+        let newApes = [];
+
+        //Make new ape array from API data using only needed info.
+        apes.forEach((item) => {
+            let newApe = {};
+
+            newApe.attributes = item.metadata.attributes;
+            newApe.img = item['media'][0]['gateway'];
+            newApe.cost = 1000;
+            newApe.id = item['media'][0]['raw'].slice(7);
+
+            newApes.push(newApe);
+        });
+
+        //Store each ape in the firestore db.
+        newApes.forEach(async function (ape) {
+            console.log('saving' + ape.id);
+
+            await setDoc(doc(db, 'apes', ape.id), {
+                attributes: ape.attributes,
+                img: ape.img,
+                cost: ape.cost,
+                id: ape.id
+            });
+        });
+    }
+
+    async function fetchApes() {
+        console.log('fetching from db');
+
+        let tempApes = [];
+
+        const querySnapshot = await getDocs(collection(db, "apes"));
+        querySnapshot.forEach((doc, index) => {
+
+            tempApes.push(doc.data());
+            setApes(tempApes);
+        });
+
+
+    }
+
+    //Fetch ape data from firestore db on load.
+    useEffect(() => {
+        fetchApes();
+    }, []);
+
+    //Add a purchased ape to signed in user's account.
+    async function addApeToAccount(ape) {
+        //Prevent attempting to add an ape without an account.
+        if (userInfo === null) return;
+
+        const uid = userInfo.uid;
+
+        const docRef = doc(db, "users", uid);
+        const docSnap = await getDoc(docRef);
+
+        let tempApes = userApes;
+        tempApes.push(ape);
+
+        setUserApes(tempApes);
+
+        //Update firestore db with user's apes.
+        await updateDoc(docRef, {
+          apes: tempApes
+        });
+
+        console.log('ape purchased!');
+    }
+
+    //Remove an ape from the firestore db market.
+    async function removeApeFromStore(ape) {
+        //Prevent attempting to add an ape without an account.
+        if (userInfo === null) return;
+
+        await deleteDoc(doc(db, "apes", ape.id));
+
+        console.log('ape deleted!');
+        
+        //Remove ape from locally displayed ape market.
+        let tempApes = apes;
+
+        const index = tempApes.indexOf(ape);
+        if (index > -1) {
+            tempApes.splice(index, 1);
+        }
+
+        setApes(tempApes.concat());
+    }
+
+    //List ape on market.
+    async function putApeOnMarket(ape) {
+        //Prevent attempting to add an ape without an account.
+        if (userInfo === null) return;
+
+        //Update firestore db with ape listing.
+        const uid = userInfo.uid;
+        await setDoc(doc(db, 'apes', ape.id), {
+            attributes: ape.attributes,
+            img: ape.img,
+            cost: ape.cost,
+            id: ape.id,
+            seller: uid,
+            sellerName: userInfo.displayName,
+            listed: true
+        });
+
+
+
+        //Update local ape array with new ape.
+        let tempApes = apes;
+        let tempApe = ape;
+        tempApe.seller = uid;
+        tempApe.sellerName = userInfo.displayName;
+        tempApe.listed = true;
+
+        tempApes.unshift(tempApe);
+        setApes(tempApes);
+
+        //Update local user's apes to reflect listing.
+        let tempUserApes = userApes;
+        const index = tempUserApes.indexOf(ape);
+        tempUserApes[index] = tempApe;
+
+        console.log(index, tempApe);
+
+        setUserApes(tempUserApes);
+
+        //Update user's ape in firestore to reflect listing.
+        const docRef = doc(db, "users", uid);
+        
+        await updateDoc(docRef, {
+          apes: tempUserApes
+        });
+
+        console.log('ape listed!');
+
+    } 
+
     return (
         <BrowserRouter>
             <div id="app">
@@ -128,10 +281,17 @@ function App() {
                 />
 
                 <Routes>
-                    <Route path='/' element={<Assets />} />
+                    <Route path='/' element={<Assets 
+                        userApes={userApes}
+                        putApeOnMarket={putApeOnMarket}
+                    />} />
                     <Route path='/market' element={<Market 
                         updateCoins={updateCoins}
                         coins={coins}
+                        saveApes={saveApes}
+                        apes={apes}
+                        addApeToAccount={addApeToAccount}
+                        removeApeFromStore={removeApeFromStore}
                     />} />
                     <Route path='/settings' element={<Settings 
                         info={userInfo}
@@ -140,6 +300,11 @@ function App() {
                         loadData={loadData}
                         updateCoins={() => updateCoins(100)}  
                     />} />
+                    
+                    <Route path='/games' element={<Games
+                    />} />
+
+
                 </Routes>
 
                 <Navbar />

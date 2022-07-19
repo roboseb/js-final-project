@@ -15,7 +15,9 @@ const Navbar = () => {
                 <div id='navmarket'>Market</div>
             </Link>
 
-            <div className='navitem' id='navgames'>Games</div>
+            <Link className='navitem' to='/games' style={{ textDecoration: 'none' }}>
+                <div id='navgames'>Games</div>
+            </Link>
 
             <Link className='navitem' to='/settings' style={{ textDecoration: 'none' }}>
                 <div id='navsettings'>Settings</div>
