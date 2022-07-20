@@ -111,3 +111,61 @@ body {
 
     pointer-events: none;
 }
+
+#games {
+    display: flex;
+    flex-direction: column;
+}
+
+#clicker {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+
+    position: relative;
+}
+
+#clicker>#tenshibox {
+    position: absolute;
+    z-index: 2;
+    top: 20%;
+    left: 50%;
+    transform: translate(-50%,  0%);
+
+    animation: float 1s infinite;
+}
+
+@keyframes float {
+    0% {transform: translate(-50%,  0%)}
+    50% {transform: translate(-50%,  -20%)}
+    100% {transform: translate(-50%,  0%)}
+}
+
+#clicker>#tenshibox>#tenshi {
+    image-rendering: -moz-crisp-edges;
+    image-rendering: -webkit-crisp-edges;
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
+
+    height: 160px;
+    width: 160px;
+
+    position: relative;
+    z-index: 1;
+}
+
+#clicker>#tenshibox>#icon {
+    position: absolute;
+    z-index: 0;
+
+    height: 87px;
+    border-radius: 23px;
+
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+#clicker>div {
+
+}

@@ -64,6 +64,7 @@ function App() {
 
     //Add cash to player account.
     async function updateCoins(amount)  {
+        
         setCoins(coins => coins + amount);
     }
 
@@ -73,7 +74,7 @@ function App() {
         //Save current coin count to the firestore db.
         async function updateCash() {
             const uid = userInfo.uid;
-            console.log(uid);
+
 
             const docRef = doc(db, "users", uid);
 
@@ -300,8 +301,10 @@ function App() {
                         loadData={loadData}
                         updateCoins={() => updateCoins(100)}  
                     />} />
-                    
+
                     <Route path='/games' element={<Games
+                        icon={userInfo === null ? null : userInfo.photoURL}
+                        updateCoins={updateCoins}
                     />} />
 
 

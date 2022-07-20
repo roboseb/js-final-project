@@ -32,6 +32,16 @@ July 18th, 2022
 
     Things are going shockingly well. You can now spend coins to buy apes, and then have them move to your own inventory and removed from the market firestore db. It all works more or less as intended. Once you're able to put them back up for sale and have that money enter your account, I can start coming up with some simple games.
 
+    So for some reason I wanted to add 3d graphics to this. And I succeeded eventually. Looks fucking cool actually.
+
+July 19th, 2022
+
+    Not sure why, but I feel pretty damn pooped today. Hopefully I can still get some decent work done. Might avoid network stuff today, and try to make some games.
+
+    Made a cool cyber angel for the clicker game. Still not sure what the game is.
+
+    Man, there is a lot to learn if I want to really start integrating three.js into my projects. Definitely no joke. Regardless, I have a little moon orbiting the planet now. It was also pretty easy to incorporate coin logic, so you can now get a random number of coins per click. There's also a chance for the planet to become flooded, giving you a X2 muliplier to coins.
+
 
 ---To-Do---
 
@@ -45,3 +55,4 @@ July 18th, 2022
 -ability to add your own apes back to market 
 -custom listing price for apes
 -fix ape list/unlist button 
+-loading screen for games
