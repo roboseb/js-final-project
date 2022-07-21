@@ -125,20 +125,25 @@ body {
     position: relative;
 }
 
+#clickerheader {
+    display: flex;
+    gap: 20px;
+}
+
 #clicker>#tenshibox {
     position: absolute;
     z-index: 2;
-    top: 20%;
-    left: 50%;
-    transform: translate(-50%,  0%);
+    top: 0;
+    right: 0;
+
 
     animation: float 1s infinite;
 }
 
 @keyframes float {
-    0% {transform: translate(-50%,  0%)}
-    50% {transform: translate(-50%,  -20%)}
-    100% {transform: translate(-50%,  0%)}
+    0% {transform: translate(0%,  0%)}
+    50% {transform: translate(0%,  -10%)}
+    100% {transform: translate(0%,  0%)}
 }
 
 #clicker>#tenshibox>#tenshi {
@@ -166,6 +171,74 @@ body {
     transform: translate(-50%, -50%);
 }
 
-#clicker>div {
+#clicker>#gamebox {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
 
+    background-color: green;
+
+    justify-content: center;
+    align-items: center;
 }
+
+#clicker #planet {
+    height: 90vw;
+    width: 90vw;
+    border-radius: 100%;
+
+    background-color: #fff;
+    position: relative;
+}
+
+#clicker .marker {
+    background-color: red;
+    border-radius: 100%;
+    color: white;
+
+    position: absolute;
+    top : 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    transition: all 0.3s;
+}
+
+#clicker .marker:hover {
+    filter: brightness(0.3);
+}
+
+#clicker .marker.clicked {
+    transform: translate(-50%, -50%) scale(12.5rem);
+    border: 5px solid black;
+}
+
+#clicker .marker>div {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+
+
+
+#progressring {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+    pointer-events: none;
+}
+
+circle {
+    transition: stroke-dashoffset 1000ms linear;
+    transform: rotate(-90deg);
+    transform-origin: 50% 50%;
+}
+

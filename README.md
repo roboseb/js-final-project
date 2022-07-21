@@ -42,6 +42,17 @@ July 19th, 2022
 
     Man, there is a lot to learn if I want to really start integrating three.js into my projects. Definitely no joke. Regardless, I have a little moon orbiting the planet now. It was also pretty easy to incorporate coin logic, so you can now get a random number of coins per click. There's also a chance for the planet to become flooded, giving you a X2 muliplier to coins.
 
+July 20th, 2022
+
+    Should I make a second minigame? I don't know. I'm really tempted to literally learn basic unity and blender so that I can make a better game than the current one. I think Godot also exports to HTML5, so that would also be an option.
+
+    Understaning a bug and fixing it is honestly more gratifying than some of the sex I've had. I hope it's the same for some of you.
+
+    Stole a CSS tricks animation for a loading circle, which looks solid. Represents a timer for clicking a marker. I guess I should explain my rework of the clicker game.
+
+    I more or less threw out the main logic and animations I had in three.js. Might bring back the planet as a visual, but it takes ages to load and is way more finicky than basic divs. In rust, you chop down trees faster by clicking these randomly placed Xs on the trunk. That was the only part of rust I liked, so why not develop it into a full game? The details aren't fleshed out yet, but here's the basic idea. You need to click the randomly placed marker within a time limit, however, there may be multiple different markers to choose from. Hitting different types of markers gives various resources, which get added into your inventory and are eventually condensed into more useful items. This might happen several times for a single item tree, a la 2048 or merge games, which I have found can be quite addictive, but recently not very compelling to play. The progression system is fun though. So after a timer runs out, a new set of markers is presented, but you have to choose which marker will be most beneficial to you, like which marker is the rarest, or which marker might produce an item you actually need in that particular moment. 
+
+    
 
 ---To-Do---
 
@@ -56,3 +67,5 @@ July 19th, 2022
 -custom listing price for apes
 -fix ape list/unlist button 
 -loading screen for games
+-prompts for signing in on non-game sections
+-fix workaround timeout on progress ring 
