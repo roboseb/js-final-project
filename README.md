@@ -52,6 +52,12 @@ July 20th, 2022
 
     I more or less threw out the main logic and animations I had in three.js. Might bring back the planet as a visual, but it takes ages to load and is way more finicky than basic divs. In rust, you chop down trees faster by clicking these randomly placed Xs on the trunk. That was the only part of rust I liked, so why not develop it into a full game? The details aren't fleshed out yet, but here's the basic idea. You need to click the randomly placed marker within a time limit, however, there may be multiple different markers to choose from. Hitting different types of markers gives various resources, which get added into your inventory and are eventually condensed into more useful items. This might happen several times for a single item tree, a la 2048 or merge games, which I have found can be quite addictive, but recently not very compelling to play. The progression system is fun though. So after a timer runs out, a new set of markers is presented, but you have to choose which marker will be most beneficial to you, like which marker is the rarest, or which marker might produce an item you actually need in that particular moment. 
 
+July 21st, 2022
+
+    I think I've worked like five full days on this, but somehow it doesn't look like it. Probably because I'm working with a lot of newish stuff to me. Lots of firestore functionality, google auth, and three.js. Would like to have this finished up in about three or four days, but I'm really not sure how much more stuff I'm going to add, or how long it'll take to fix up the store. Plus, I really want some price graphs for the NFTs, but that may be complicated to implement without an actual userbase.
+
+    Spent literally hours trying to get a gif animation to play correctly when mining. Said to myself, "fuck it" and rebuilt it in CSS. Took like 5 minutes and works perfectly
+
     
 
 ---To-Do---

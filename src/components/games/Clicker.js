@@ -1,14 +1,17 @@
-import React, { useRef, useState, Suspense } from 'react'
+import React, { useRef, useState, useEffect, Suspense } from 'react'
 import { Canvas, useFrame, useLoader} from "@react-three/fiber";
 import { MinEquation, TextureLoader } from 'three';
 import { MeshLambertMaterial } from "three";
 import { BoxBufferGeometry } from "three";
+
+import {animateMining, animateBeam, animateMiss, animateTimerExpired} from "../animations";
 
 import ProgressRing from '../ProgressRing';
 
 import uniqid from "uniqid";
 
 import tenshiGif from "../../art/tenshi.gif";
+import rodGif from "../../art/rod_ani.gif";
 
 function Planet(props) {
 
@@ -126,7 +129,6 @@ function Moon(props) {
             }}
             onPointerOver={(event) => {
                 hover(true);
-                console.log(hovered);
 
             }}
             onPointerOut={(event) => hover(false)}>
@@ -150,8 +152,7 @@ const Marker = (props) => {
                     width: props.width,
                     backgroundColor: props.color}}
             onClick={(e) => {
-                props.mine(props.color);
-                props.animateMarker(e);
+                props.mine(e, props.color);
                 clearTimeout(props.timer);
             }}
         >
@@ -164,65 +165,138 @@ const Marker = (props) => {
     );
 }
 
+// const MiningAnimation = (props) => {
 
+//     // const [gif, setGif] = useState(rodGif);
+//     // const [loaded, setLoaded] = useState(rodGif);
+//     // const [gifLoaded, setGifLoaded] = useState(false);
+
+
+//     // const reloadGif = () => {
+//     //     if (gifLoaded === true) return;
+
+//     //     setGifLoaded(true);
+
+//     //     setLoaded('');
+//     //     setTimeout(() => {
+//     //         console.log('reloaded')
+//     //         setLoaded(gif)
+//     //     }, 50);
+//     // }
+
+//     const [loaded, setLoaded] = useState('rodGif');
+
+
+//     return (
+//         <img 
+//             onLoad={reloadGif}
+//             src={loaded} 
+//             id='mininganimation' 
+//             alt=""
+//             style={{
+//                 top: props.top,
+//                 left: props.left,
+//                 height: props.height
+//             }}
+//         ></img>
+//     );
+// }
 
 const Clicker = (props) => {
     const [coinMultiplier, setCoinMultiplier] = useState(1);
     const [autoMoon, setAutoMoon] = useState(false);
 
     const [markers, setMarkers] = useState([]);
+    const [vessel, setVessel] = useState([]);
+
+    const [bluePercent, setBluePercent] = useState(0);
+    const [blackPercent, setBlackPercent] = useState(0);
+
+    const [inventory, setInventory] = useState({
+        gnoxide: 0,
+        carbonant: 0
+    });
+
     const [counter, setCounter] = useState(0);
     const [timer, setTimer] = useState(null);
 
     //Add a new marker to the planet.
-    const addMarker = () => {
+    const addMarkers = () => {
 
         clearTimeout(timer);
 
         const planet = document.getElementById('planet');
         const planetWidth = planet.offsetWidth;
 
-        let tempMarkers = markers;
-        tempMarkers.splice(-1, 1);
+        let tempMarkers = [];
 
-        const [top, left] = randomPosition(20);
+        //Add a blue marker everytime.
+        tempMarkers = (tempMarkers.concat(blueMarker()));
+
+        if (roll(50) === true) {
+            console.log('adding red');
+            tempMarkers = (tempMarkers.concat(blackMarker()));
+        }
         
-        const info = blueMarker();
 
-        setMarkers(tempMarkers.concat({
-            top: top,
-            left: left,
-            width: info.width,
-            height: info.height,
-            color: info.color,
-
-        }));
+        setMarkers(tempMarkers);
 
         //Remove all markers and add a new one after a given time.
         setTimer(setTimeout(() => {
-            
-            removeMarkers();
-            addMarker();
-            
-
+            handleTimerExpired();
         }, 1050));
     }
 
-    
+    //Handle a click that doesn't hit a marker.
+    const handleMiss = () => {
+        animateMiss();
+
+        setVessel([]);
+        setBluePercent(0);
+        setBlackPercent(0);
+    }
+
+    //Handle various actions when no marker is clicked with the time.
+    const handleTimerExpired = () => {
+        clearTimeout(timer);
+        addMarkers();
+
+        setVessel([]);
+        setBluePercent(0);
+        setBlackPercent(0);
+
+        animateTimerExpired();
+    }
 
     //Get dimensions and color for creating a blue marker.
     const blueMarker = () => {
+        const [top, left] = randomPosition(25);
+
         return {
+            top: top,
+            left: left,
             width: '50px',
             height: '50px',
             color: 'blue'
         }
     }
 
+    //Get dimensions and color for creating a red marker.
+    const blackMarker = () => {
+        const [top, left] = randomPosition(15);
+
+        return {
+            top: top,
+            left: left,
+            width: '30px',
+            height: '30px',
+            color: 'black'
+        }
+    }
+
     //Remove all markers.
-    const removeMarkers = () => {   
-
-
+    const removeMarkers = () => { 
+        
         setMarkers(markers => []);
         setCounter(counter + 1);
     }
@@ -242,16 +316,79 @@ const Clicker = (props) => {
         return [posX, posY]
     }
 
-    const mine = (color) => {
-        //console.log(color);
+    const mine = (e, color) => {
+
+        animateMining(e);
+
+        addToVessel(color);
     }
 
-    //THIS OBVIOUSLY DOES NOTHING BECAUSE THE MARKER IS IMMEDIATELY REMOVED ON CLICK
-    const animateMarker = (e) => {
-        console.log(e.target);
-        e.target.classList.add('clicked');
-        e.target.style.border = '5px solid green'
+    //Roll a 100-sided die and return whether it is less than or
+    //equal to the given percentChance.
+    const roll = (percentChance) => {
+        const diceRoll = Math.round(Math.random() * 100);
+        let outcome;
+
+        if (diceRoll <= percentChance) {
+            outcome = true;
+        } else {
+            outcome = false;
+        }
+
+        return outcome;
     }
+
+    const addToVessel = (color) => {
+        let tempVessel = vessel;
+        tempVessel.push(color);
+
+        let blue = 0;
+        let black = 0;
+
+        tempVessel.forEach(element => {
+            if (element === 'blue') {
+                blue++;
+            } else if (element === 'black') {
+                black++
+            }
+        });
+
+        let newVessel = [];
+
+        for (let i = 0; i < blue; i++) {
+            newVessel.push('blue');
+        }
+
+        for (let i = 0; i < black; i++) {
+            newVessel.push('black');
+        }
+
+        //Take in color percentages and craft according recipes.
+        processColorRatio(blue, black);
+
+        //Update color percentages.
+        setBluePercent(Math.round(blue/tempVessel.length * 100));
+        setBlackPercent(Math.round(black/tempVessel.length * 100));
+
+        setVessel(newVessel);
+    }    
+
+    //Check the vessel to see if anything has been crafted.
+    const processColorRatio = (blue, black) => {
+        let tempInv = inventory;
+
+        //Add one gnoxide to inventory.
+        if (blue === black) {
+            tempInv.gnoxide += 1;
+            setInventory(tempInv);
+
+        //Add one carbonant to inventory.
+        } else if (black > 5 && blue === 0) {
+            tempInv.carbonant += 1;
+            setInventory(tempInv);
+        }
+    }
+
 
     return (
         <div id='clicker'>
@@ -282,11 +419,24 @@ const Clicker = (props) => {
             </Canvas> */}
 
             <div id='gamebox'>
-                <button onClick={removeMarkers} >Remove Markers</button>
+                <div id='vessel'>
+                    <div id='percentages'>
+                        {bluePercent}% {blackPercent}%
+                    </div>
+                    
+                    {vessel.map((item) => {
+                        return (<div className='vesselcolor' style={{backgroundColor: item}}></div>)
+                    })}
+                </div>
                 <div id='planet'
-                    onClick={() => {
-                        removeMarkers();
-                        addMarker();
+                    onClick={(e) => {
+                        addMarkers();
+                        
+
+                        if (e.target.id === 'planet') {
+                            console.log('miss');
+                            handleMiss();
+                        }
                         
                     }}>
                     {markers.map((item) => {
@@ -300,17 +450,16 @@ const Clicker = (props) => {
                                     mine={mine}
                                     timer={timer}
                                     setTimer={setTimer}
-                                    animateMarker={animateMarker}
 
 
                                 />
                     })}
 
+
+
+
                 </div>
-
-
             </div>
- 
         </div>
     );
 }
