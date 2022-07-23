@@ -49,6 +49,14 @@ body {
     flex-grow: 1;
     display: flex;
     background-color: red;
+
+    transform: translateX(0%);
+    transition: all 500ms;
+    transition-timing-function: cubic-bezier(0.1, 1, 0.1, 1);
+}
+
+#navbar.hidden {
+    transform: translateX(-100%);
 }
 
 .navitem {
@@ -135,7 +143,6 @@ body {
     z-index: 2;
     top: 0;
     right: 0;
-
 
     animation: float 1s infinite;
 }
@@ -333,6 +340,12 @@ circle {
 
 #vessel>.vesselcolor {
     flex-grow: 1;
+    animation: fillvessel 0.5s;
+}
+
+@keyframes fillvessel {
+    from {flex-grow: 0}
+    to {flex-grow: 1}
 }
 
 #vessel>#percentages {
@@ -341,4 +354,168 @@ circle {
     position: absolute;
     bottom: -30px;
     left: 0;
+}
+
+#clickerinventory {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 3;
+
+    box-sizing: border-box;
+    background-color: white;
+    border: 5px solid black;
+
+    transform: translateX(-100%);
+    height: 100%;
+    width: 50vw;
+    transition: all 0.4s;
+    transition-timing-function: cubic-bezier(0.2, 1, 0.2, 1);
+
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+#clickerinventory>img {
+    image-rendering: -moz-crisp-edges;
+    image-rendering: -webkit-crisp-edges;
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
+}
+
+#clickerinventory.shown {
+    transform: translateX(0%);
+}
+
+#clickerinventory>.clickerinvitem {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+
+    background-color: wheat;
+
+    position: relative;
+}
+
+#clickerinventory>.clickerinvitem>.countbox {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 2rem;
+
+    position: relative;
+}
+
+.usebtn {
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: -1;
+
+    box-sizing: border-box;
+    border-radius: 0 10px 10px 0;
+    height: 100%;
+    background-color: aquamarine;
+    transform: translateX(0%);
+    border: 5px solid black;
+    border-left: none;
+    padding-left: 10px;
+    padding-right: 5px;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    transition: all 0.3s;
+}
+
+.usebtn>img {
+    height: 30px;
+    
+}
+
+.usebtn.shown {
+    transform: translateX(100%);
+}
+
+#recentitem {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    padding: 10px;
+    transform: translateX(-100%);
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    transition: all 0.3s;
+}
+
+#recentitem.shown {
+    transform: translateX(0%);
+}
+
+#recentitem>img {
+    height: 70px;
+    filter: drop-shadow(5px 5px 5px black);
+
+    image-rendering: -moz-crisp-edges;
+    image-rendering: -webkit-crisp-edges;
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
+
+    transition: all 0.3s;
+}
+
+#recentitem>img.shown {
+    animation: imagebounce 1s;
+}
+
+@keyframes imagebounce {
+    0% {height: 70px}
+    50% {height: 120px}
+    100% {height: 70px}
+}
+
+
+
+#navtogglebtn {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+}
+
+#clickernav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    display: flex;
+
+    background-color: thistle;
+    width: 100vw;
+    height: 25vw;
+
+    box-sizing: border-box;
+    gap: 5px;
+    padding: 5px;
+
+    transition: all 500ms;
+    transition-timing-function: cubic-bezier(0.1, 1, 0.1, 1);
+    transform: translateX(100%);
+}
+
+#clickernav.shown {
+    transform: translateX(0%);
+}
+
+#clickernav>.clickernavitem {
+    flex-grow: 1;
+    background-color: black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
 }

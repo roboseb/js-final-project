@@ -56,7 +56,17 @@ July 21st, 2022
 
     I think I've worked like five full days on this, but somehow it doesn't look like it. Probably because I'm working with a lot of newish stuff to me. Lots of firestore functionality, google auth, and three.js. Would like to have this finished up in about three or four days, but I'm really not sure how much more stuff I'm going to add, or how long it'll take to fix up the store. Plus, I really want some price graphs for the NFTs, but that may be complicated to implement without an actual userbase.
 
-    Spent literally hours trying to get a gif animation to play correctly when mining. Said to myself, "fuck it" and rebuilt it in CSS. Took like 5 minutes and works perfectly
+    Spent literally hours trying to get a gif animation to play correctly when mining. Said to myself, "fuck it" and rebuilt it in CSS. Took like 5 minutes and works perfectly.
+
+July 22nd, 2022
+
+    Pushed the project to github pages using a guide, and it kinda works! I think there are some issues with firestore, so I may have it setup up in test mode or something. Aside from that, the game looks great on my modern phone and is way more natural to play with a touchscreen than a mouse, which was the idea anyway.
+
+    Ran into a little snag. I have a function on a timer loop that draws new markers. It does this by resetting everything and then setting state. What I want it to do is simply take in a usestate to roll dice on which markers to draw. However, it seems it can't read anything but the state from the first time it was called. So I made a little test function that mirrors my timer from the Dragon Quest project. It doesn't work. But it does work in a very similar loop in the Dragon Quest project. Why? I have no idea. The only major struggles I've had in recent memory are all related to usestate. Class components never gave me this much trouble. 
+
+    So, I think, like, useState doesn't work with straight values sometimes? I tweaked the timer to only use a number instead of an array, and it wouldn't update properly. Then I switched it to an array with a single value, and it worked as expected. Fucking react, man.
+
+    Seems that what I want to do is somehow much more complicated than that. Regardless, I now can use an item to increase black chance to 100% or whatever, but I can't for the life of me just swap the values. Gonna leave it as is for now and take a break.
 
     
 
@@ -75,3 +85,9 @@ July 21st, 2022
 -loading screen for games
 -prompts for signing in on non-game sections
 -fix workaround timeout on progress ring 
+-add tracking for individual amounts of elements
+-add navbar switch for clicker
+-change router paths to work with js-final-project/...
+-fix vessel filling animation
+-save inventory to firestore
+-fix app loading in with full screen buttons

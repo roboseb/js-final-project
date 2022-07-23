@@ -12,6 +12,8 @@ import uniqid from "uniqid";
 
 import tenshiGif from "../../art/tenshi.gif";
 import rodGif from "../../art/rod_ani.gif";
+import gnoxideImg from "../../art/gnoxide.png";
+import carbonantImg from "../../art/carbonant.png";
 
 function Planet(props) {
 
@@ -213,28 +215,58 @@ const Clicker = (props) => {
     const [blackPercent, setBlackPercent] = useState(0);
 
     const [inventory, setInventory] = useState({
-        gnoxide: 0,
-        carbonant: 0
+        gnoxide: {amount: 0, img: gnoxideImg},
+        carbonant: {amount: 0, img: carbonantImg}
     });
+    const [recentItem, setRecentItem] = useState(null);
 
-    const [counter, setCounter] = useState(0);
+    const [counter, setCounter] = useState([0]);
     const [timer, setTimer] = useState(null);
+    const [recentTimer, setRecentTimer] = useState(null);
+
+    const [blueChance, setBlueChance] = useState([100]);
+    const [blackChance, setBlackChance] = useState([50]);
+
+    // const updateCounter = () => {
+    //     let tempCounter = counter;
+    //     tempCounter[0] += 1;
+
+    //     setCounter(tempCounter);
+    //     console.log(counter[0]);
+
+    //     let tempChance = blackChance;
+    //     tempChance[0] += 1;
+
+    //     setBlackChance(tempChance);
+
+    //     setTimeout(updateCounter, 1000);
+    // }
+
+    window.onload = function() {
+        // updateCounter();
+
+        addMarkers();
+    }
 
     //Add a new marker to the planet.
     const addMarkers = () => {
+ 
+
+        console.log(`${blueChance[0]}%`, `${blackChance[0]}%`)
+
 
         clearTimeout(timer);
 
-        const planet = document.getElementById('planet');
-        const planetWidth = planet.offsetWidth;
-
+        //Clear all previous markers.
         let tempMarkers = [];
 
-        //Add a blue marker everytime.
-        tempMarkers = (tempMarkers.concat(blueMarker()));
+        //Roll for placing a blue marker.
+        if (roll(blueChance[0]) === true) {
+            tempMarkers = (tempMarkers.concat(blueMarker()));
+        }
 
-        if (roll(50) === true) {
-            console.log('adding red');
+        //Roll for placing a black marker.
+        if (roll(blackChance[0]) === true) {
             tempMarkers = (tempMarkers.concat(blackMarker()));
         }
         
@@ -258,6 +290,7 @@ const Clicker = (props) => {
 
     //Handle various actions when no marker is clicked with the time.
     const handleTimerExpired = () => {
+
         clearTimeout(timer);
         addMarkers();
 
@@ -292,13 +325,6 @@ const Clicker = (props) => {
             height: '30px',
             color: 'black'
         }
-    }
-
-    //Remove all markers.
-    const removeMarkers = () => { 
-        
-        setMarkers(markers => []);
-        setCounter(counter + 1);
     }
 
     //Return a random XY position within the planet given a radius.
@@ -378,15 +404,94 @@ const Clicker = (props) => {
         let tempInv = inventory;
 
         //Add one gnoxide to inventory.
-        if (blue === black) {
-            tempInv.gnoxide += 1;
+        if (blue === black && blue > 2) {
+            tempInv.gnoxide.amount += 1;
             setInventory(tempInv);
+            animateItemGet('gnoxide');
 
         //Add one carbonant to inventory.
         } else if (black > 5 && blue === 0) {
-            tempInv.carbonant += 1;
+            tempInv.carbonant.amount += 1;
             setInventory(tempInv);
+            animateItemGet('carbonant');
         }
+    }
+
+    //Toggle the navbar between the clicker game and global versions.
+    const toggleNavbar = () => {
+        const navbar = document.getElementById('navbar');
+        const clickerNav = document.getElementById('clickernav');
+
+        navbar.classList.toggle('hidden');
+        clickerNav.classList.toggle('shown');
+    }
+
+    const showInventory = () => {
+        const inventory = document.getElementById('clickerinventory');
+        inventory.classList.toggle('shown');
+    }
+
+    const animateItemGet = (item) => {
+        clearTimeout(recentTimer);
+
+        setRecentItem(inventory[item].img);
+
+        const recent = document.getElementById('recentitem');
+        recent.classList.add('shown');
+
+        const recentImg = recent.querySelector('img');
+        recentImg.classList.add('shown');
+
+        setRecentTimer(setTimeout(() => {
+            recent.classList.remove('shown');
+            recentImg.classList.remove('shown');
+        }, 1000));
+    }
+
+    //Toggle visibility on the use item button.
+    const toggleUseButton = (e) => {
+        const box = e.target.parentElement.parentElement;
+        const useBtn = box.querySelector('.usebtn');
+        useBtn.classList.toggle('shown');
+    }
+
+    //Use an item if available.
+    const consumeItem = (item) => {
+
+        //Prevent using an item when the player has none.
+        if (inventory[item]['amount'] < 1) {
+            console.log('sorry, no' + item);
+            return;
+        }
+
+        //The gnoxide ability, which swaps odds for blue and black markers.
+        if (item === 'gnoxide') {
+            let tempBlackChance = blackChance;
+
+
+            tempBlackChance[0] = blueChance[0];
+
+            console.log('temp black chance:', tempBlackChance)
+
+            setBlackChance(tempBlackChance);
+
+            console.log('using gnoxide, chances are: ' + blueChance, blackChance);
+        }
+
+        if (item === 'carbonant') {
+            console.log('using carbonant')
+        }
+
+    }
+
+    const fillInventory = () => {
+
+        let tempInv = inventory;
+
+        tempInv.gnoxide.amount = 20;
+        tempInv.carbonant.amount = 20;
+
+        setInventory(tempInv);
     }
 
 
@@ -394,7 +499,6 @@ const Clicker = (props) => {
         <div id='clicker'>
             <div id='clickerheader'>
                 <h1>Clicker</h1>
-                <h1>x{coinMultiplier}</h1>
             </div>
 
             <div id='tenshibox'>
@@ -421,20 +525,20 @@ const Clicker = (props) => {
             <div id='gamebox'>
                 <div id='vessel'>
                     <div id='percentages'>
-                        {bluePercent}% {blackPercent}%
+                        {bluePercent}% {blackPercent}% {blueChance} {blackChance}
                     </div>
                     
                     {vessel.map((item) => {
                         return (<div className='vesselcolor' style={{backgroundColor: item}}></div>)
                     })}
                 </div>
+                <button onClick={fillInventory}>Fill Inventory</button>
                 <div id='planet'
-                    onClick={(e) => {
-                        addMarkers();
+                    onClick={(e,) => {
                         
 
                         if (e.target.id === 'planet') {
-                            console.log('miss');
+                            
                             handleMiss();
                         }
                         
@@ -454,10 +558,33 @@ const Clicker = (props) => {
 
                                 />
                     })}
+                </div>
+                <div id='clickerinventory'>
+                    {Object.keys(inventory).map((key, index) => {
+                        return <div className='clickerinvitem'>
+                            <div>{key}</div>
+                            <div className='countbox'>
+                                {inventory[key].amount}<img src={inventory[key].img} alt="" onClick={e => toggleUseButton(e)}></img>
+                            </div>
+                            <div className='usebtn' onClick={() => consumeItem(key)}>
+                                <div>use</div>
+                                <img src={inventory[key].img} alt=""></img>
+                            </div>
+                            
+                            
+                            
+                        </div>
+                    })}
+                </div>
+                <div id='recentitem'>
+                    <img src={recentItem} alt=""></img>
+                </div>
 
 
-
-
+                <button id='navtogglebtn' onClick={toggleNavbar}>🔃</button>
+                <div id='clickernav'>
+                    <div onClick={showInventory} className="clickernavitem">Inventory</div>
+                    <div className="clickernavitem">Recipes</div>
                 </div>
             </div>
         </div>
