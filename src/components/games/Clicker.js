@@ -244,15 +244,15 @@ const Clicker = (props) => {
 
     window.onload = function() {
         // updateCounter();
-
-        addMarkers();
+        console.log('loaded');
+        //addMarkers();
     }
 
     //Add a new marker to the planet.
     const addMarkers = () => {
  
 
-        console.log(`${blueChance[0]}%`, `${blackChance[0]}%`)
+        console.log(`${blueChance[0]}%`, `${blackChance[0]}%`);
 
 
         clearTimeout(timer);
@@ -535,7 +535,7 @@ const Clicker = (props) => {
                 <button onClick={fillInventory}>Fill Inventory</button>
                 <div id='planet'
                     onClick={(e,) => {
-                        
+                        addMarkers();
 
                         if (e.target.id === 'planet') {
                             
