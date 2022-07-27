@@ -1,3 +1,10 @@
+:root {
+    --mining-color: 'black';
+    --blue-grow: 0;
+    --black-grow: 0;
+    --time-range: 1000;
+}
+
 body {
   margin: 0;
 }
@@ -142,7 +149,7 @@ body {
     position: absolute;
     z-index: 2;
     top: 0;
-    right: 0;
+    left: 25px;
 
     animation: float 1s infinite;
 }
@@ -189,6 +196,45 @@ body {
     align-items: center;
 }
 
+#planet #multiplier {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+    filter: opacity(0.2);
+    font-weight: bolder;
+    font-size: 25vw;
+    pointer-events: none;
+}
+
+#planet #multiplier.bounce {
+    animation: bounce 0.6s;
+}
+
+@keyframes bounce {
+    0% {font-size: 25vw; filter: opacity(0.2);}
+    25% {font-size: 40vw; filter: opacity(0.5);}
+    100% {font-size: 25vw; filter: opacity(0.2);}
+}
+
+#gamebox>#effects {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    width: 100%;
+    filter: opacity(0.4) grayscale(100%);
+}
+
+#gamebox>#effects img {
+    height: 40px;
+}
+
 #clicker #planet {
     height: 90vw;
     width: 90vw;
@@ -213,6 +259,12 @@ body {
     justify-content: center;
 
     transition: all 0.3s;
+    animation: marker 0.3s;
+}
+
+@keyframes marker {
+    from {filter: opacity(0)}
+    to {filter: opacity(1)}
 }
 
 #clicker .marker:hover {
@@ -244,10 +296,64 @@ body {
 }
 
 circle {
-    transition: stroke-dashoffset 1000ms linear;
+    transition: stroke-dashoffset var(--time-range) linear;
     transform: rotate(-90deg);
     transform-origin: 50% 50%;
 }
+
+#startbtnbox {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+    background-color: red;
+}
+
+#startbtnbox>svg {
+    position: absolute;
+    top: 0;
+    left: 0;
+
+    width: 100%;
+    height: 100%;
+}
+
+
+#startbtnbox>svg>rect {
+    width: 100%;
+    height: 100%;
+    fill: blue;
+    stroke: pink;
+    stroke-width: 15;
+    fill-opacity: 0.1;
+    stroke-opacity: 0.9;
+
+    animation: startbtn 1s infinite;
+}
+
+@keyframes startbtn {
+    0% {stroke-dashoffset: 1000; stroke-width: 10;}
+    80% {stroke-dashoffset: 0; stroke-width: 20;}
+    100% {stroke-dashoffset: -500; stroke-width: 10;}
+}
+
+#startbtn {
+    border: none;
+
+    font-size: 3rem;
+    z-index: 1;
+    display: none;
+    animation: startbtn 1s infinite;
+}
+
+@keyframes startbtn {
+    0% {}
+}
+
+#startbtn.shown {
+    display: block;
+}   
 
 #mininganimation {
     height: 60px;
@@ -266,11 +372,14 @@ circle {
 
 @keyframes rodani {
     0% {transform: translate(-50%, -50%) scale(1);
-            border: 0px solid black}
+            border: 0px solid var(--mining-color);
+            filter: opacity(0.7)}
     30% {transform: translate(-50%, -50%) scale(2);
-            border: 10px solid rgba(0, 0, 0, 0.849)}
+            border: 10px solid var(--mining-color);
+            filter: opacity(1)}
     100% {transform: translate(-50%, -50%) scale(4);
-        border: 0px solid rgba(0, 0, 0, 0.342)}
+            border: 0px solid var(--mining-color);
+            filter: opacity(0)}
 }
 
 
@@ -281,6 +390,16 @@ circle {
 @keyframes miss {
     0% {background-color: white;}
     50% {background-color: red;}
+    100% {background-color: white;}
+}
+
+#planet.success {
+    animation: success 0.5s 2;
+}
+
+@keyframes success {
+    0% {background-color: white;}
+    50% {background-color: orange;}
     100% {background-color: white;}
 }
 
@@ -326,7 +445,7 @@ circle {
 #vessel {
     position: absolute;
     top: 0;
-    left: 0;
+    right: 0;
 
     width: 50%;
     height: 75px;
@@ -338,14 +457,71 @@ circle {
 
 }
 
-#vessel>.vesselcolor {
-    flex-grow: 1;
-    animation: fillvessel 0.5s;
+#vessel>#vesselblue {
+    background-color: blue;
+    flex-grow: var(--blue-grow);
+    position: relative;
+
+    transition: all 0.5s;
+    overflow: hidden;
 }
 
-@keyframes fillvessel {
-    from {flex-grow: 0}
-    to {flex-grow: 1}
+#vessel>#vesselblack {
+    background-color: black;
+    flex-grow: var(--black-grow);
+    position: relative;
+
+    transition: all 0.5s;
+    overflow: hidden;
+}
+
+#vessel>#vesselblack>div, #vessel>#vesselblue>div {
+    color: white;
+    font-size: 2.5rem;
+
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+#vessel>#hotitems {
+    display: flex;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+
+    transform: translateY(125%);
+}
+
+#hotitems>.hotitem {
+   
+}
+
+#hotitems>.hotitem img {
+    height: 27px;
+    filter: grayscale(50%) opacity(50%);
+}
+
+#hotitems>.hotitem>div {
+    position: relative;
+}
+
+#hotitems>.hotitem .hotitemcount {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    transform: translate(0, 90%);
+    z-index: 1;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    font-size: 2rem;
+    font-weight: bolder;
 }
 
 #vessel>#percentages {

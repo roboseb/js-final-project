@@ -5,6 +5,10 @@ const animateMining = (e) => {
     let ani = document.createElement('div')
     ani.id = 'mininganimation';
 
+    //Set the mining animation color to match the marker mined.
+    const root = document.documentElement;
+    root.style.setProperty('--mining-color', e.target.style.backgroundColor)
+
     ani.style.left = `${rect.x + (e.target.offsetWidth / 2)}px`;
     ani.style.top = `${rect.y + (e.target.offsetWidth / 2)}px`;
     ani.style.height = `${e.target.offsetWidth}px`;
@@ -56,16 +60,48 @@ const animateBeam = (target) => {
 
 const animateMiss = () => {
     const planet = document.getElementById('planet');
-    planet.classList.remove('miss', 'timerexpired');
+    planet.classList.remove('miss', 'success', 'timerexpired');
     void planet.offsetWidth;
     planet.classList.add('miss');
 }
 
+const animateSuccess = () => {
+    const planet = document.getElementById('planet');
+    planet.classList.remove('miss', 'success', 'timerexpired');
+    void planet.offsetWidth;
+    
+    planet.classList.add('success');
+}
+
 const animateTimerExpired = () => {
     const planet = document.getElementById('planet');
-    planet.classList.remove('miss', 'timerexpired');
+    planet.classList.remove('miss', 'success', 'timerexpired');
     void planet.offsetWidth;
     planet.classList.add('timerexpired');
 }
 
-export {animateMining, animateBeam, animateMiss, animateTimerExpired}
+//Toggle visibility on the use item button.
+const toggleUseButton = (e) => {
+    const box = e.target.parentElement.parentElement;
+    const useBtn = box.querySelector('.usebtn');
+    useBtn.classList.toggle('shown');
+}
+
+//Toggle the navbar between the clicker game and global versions.
+const toggleNavbar = () => {
+    const navbar = document.getElementById('navbar');
+    const clickerNav = document.getElementById('clickernav');
+
+    navbar.classList.toggle('hidden');
+    clickerNav.classList.toggle('shown');
+}
+
+const showInventory = () => {
+    const inventory = document.getElementById('clickerinventory');
+    inventory.classList.toggle('shown');
+}
+
+
+
+export {animateMining, animateBeam, animateMiss, animateSuccess, 
+        animateTimerExpired, toggleUseButton, toggleNavbar, showInventory}

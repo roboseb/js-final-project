@@ -4,7 +4,9 @@ import { MinEquation, TextureLoader } from 'three';
 import { MeshLambertMaterial } from "three";
 import { BoxBufferGeometry } from "three";
 
-import {animateMining, animateBeam, animateMiss, animateTimerExpired} from "../animations";
+import {animateMining, animateBeam, animateMiss, animateSuccess, 
+        animateTimerExpired, toggleUseButton, toggleNavbar,
+        showInventory} from "../animations";
 
 import ProgressRing from '../ProgressRing';
 
@@ -162,6 +164,7 @@ const Marker = (props) => {
                 radius={props.height.split('p')[0]}
                 stroke={4}
                 progress={props.progress}
+                timer={props.timeRange}
             />
         </div>
     );
@@ -205,55 +208,43 @@ const Marker = (props) => {
 // }
 
 const Clicker = (props) => {
-    const [coinMultiplier, setCoinMultiplier] = useState(1);
-    const [autoMoon, setAutoMoon] = useState(false);
-
     const [markers, setMarkers] = useState([]);
-    const [vessel, setVessel] = useState([]);
-
-    const [bluePercent, setBluePercent] = useState(0);
-    const [blackPercent, setBlackPercent] = useState(0);
 
     const [inventory, setInventory] = useState({
         gnoxide: {amount: 0, img: gnoxideImg},
         carbonant: {amount: 0, img: carbonantImg}
     });
+
+    const [hotItems, setHotItems] = useState({
+        gnoxide: {amount: 0, img: gnoxideImg},
+        carbonant: {amount: 0, img: carbonantImg}
+    });
+
     const [recentItem, setRecentItem] = useState(null);
 
-    const [counter, setCounter] = useState([0]);
     const [timer, setTimer] = useState(null);
     const [recentTimer, setRecentTimer] = useState(null);
 
-    const [blueChance, setBlueChance] = useState([100]);
-    const [blackChance, setBlackChance] = useState([50]);
+    const [blueCount, setBlueCount] = useState(0);
+    const [blackCount, setBlackCount] = useState(0);
 
-    // const updateCounter = () => {
-    //     let tempCounter = counter;
-    //     tempCounter[0] += 1;
+    const [bluePercent, setBluePercent] = useState(0);
+    const [blackPercent, setBlackPercent] = useState(0);
 
-    //     setCounter(tempCounter);
-    //     console.log(counter[0]);
+    const [multiplier, setMultiplier] = useState(1);
+    const [gnoxideActive, setGnoxideActive] = useState(false);
+    const [carbonantActive, setCarbonantActive] = useState(false);
 
-    //     let tempChance = blackChance;
-    //     tempChance[0] += 1;
+    const [timeRange, setTimeRange] = useState(1050);
 
-    //     setBlackChance(tempChance);
-
-    //     setTimeout(updateCounter, 1000);
-    // }
-
-    window.onload = function() {
-        // updateCounter();
-        console.log('loaded');
-        //addMarkers();
+    //Start placing markers.
+    const startGame = () => {
+        const startBtn = document.getElementById('startbtn');
+        startBtn.classList.toggle('shown');
     }
 
     //Add a new marker to the planet.
     const addMarkers = () => {
- 
-
-        console.log(`${blueChance[0]}%`, `${blackChance[0]}%`);
-
 
         clearTimeout(timer);
 
@@ -261,13 +252,22 @@ const Clicker = (props) => {
         let tempMarkers = [];
 
         //Roll for placing a blue marker.
-        if (roll(blueChance[0]) === true) {
+        if (roll(100) === true) {
             tempMarkers = (tempMarkers.concat(blueMarker()));
         }
 
         //Roll for placing a black marker.
-        if (roll(blackChance[0]) === true) {
+        if (roll(100) === true) {
             tempMarkers = (tempMarkers.concat(blackMarker()));
+        }
+
+        //Increase the chances of having an orange marker with carbonant active.
+        let orangeOdds = 10;
+        if (carbonantActive) orangeOdds = 100;
+
+        //Roll for placing an orange marker.
+        if (roll(orangeOdds) === true) {
+            tempMarkers = (tempMarkers.concat(orangeMarker()));
         }
         
 
@@ -275,41 +275,90 @@ const Clicker = (props) => {
 
         //Remove all markers and add a new one after a given time.
         setTimer(setTimeout(() => {
-            handleTimerExpired();
-        }, 1050));
+            handleMiss();
+        }, timeRange));
     }
 
     //Handle a click that doesn't hit a marker.
     const handleMiss = () => {
-        animateMiss();
-
-        setVessel([]);
-        setBluePercent(0);
-        setBlackPercent(0);
-    }
-
-    //Handle various actions when no marker is clicked with the time.
-    const handleTimerExpired = () => {
+        const startBtn = document.getElementById('startbtn');
+        startBtn.classList.toggle('shown');
 
         clearTimeout(timer);
-        addMarkers();
 
-        setVessel([]);
-        setBluePercent(0);
-        setBlackPercent(0);
+        animateMiss();
+        setMarkers([]);
+        emptyVessel();
+        setMultiplier(1);
+        setCarbonantActive(false);
+        setGnoxideActive(false);
+        setTimeRange(1050);
 
-        animateTimerExpired();
+        //Reset all hot item counts to 0;
+        setHotItems({
+            gnoxide: {amount: 0, img: gnoxideImg},
+            carbonant: {amount: 0, img: carbonantImg}
+        });
     }
+
+    //On orange marker click, give player all hot items and reset board.
+    const handleSuccess = () => {
+        console.log('grats!');
+
+        const startBtn = document.getElementById('startbtn');
+        startBtn.classList.toggle('shown');
+        
+        animateSuccess();
+        setMarkers([]);
+        emptyVessel();
+        setMultiplier(1);
+        setCarbonantActive(false);
+        setGnoxideActive(false);
+        setTimeRange(1050);
+
+        //Add all hot items to inventory.
+        let tempInventory = inventory;
+
+        tempInventory['gnoxide']['amount'] += hotItems['gnoxide']['amount'];
+        tempInventory['carbonant']['amount'] += hotItems['carbonant']['amount'];
+
+        //Animate moving items to the inventory.
+        if (hotItems['gnoxide']['amount'] > 0) {
+            animateItemGet('gnoxide');
+        }
+
+        setTimeout(() => {
+            if (hotItems['carbonant']['amount'] > 0) {
+                animateItemGet('carbonant');
+            } 
+        }, 1000);
+
+        //Reset all hot item counts to 0;
+        setHotItems({
+            gnoxide: {amount: 0, img: gnoxideImg},
+            carbonant: {amount: 0, img: carbonantImg}
+        });
+    }
+
+    useEffect(() => {
+        const mult = document.getElementById('multiplier');
+        mult.classList.remove('bounce');
+        void mult.offsetWidth;
+        mult.classList.add('bounce');
+    }, [multiplier]);
 
     //Get dimensions and color for creating a blue marker.
     const blueMarker = () => {
         const [top, left] = randomPosition(25);
 
+        let size = '50px';
+        if (gnoxideActive) size = '75px';
+
         return {
             top: top,
             left: left,
-            width: '50px',
-            height: '50px',
+            width: size,
+            height: size,
             color: 'blue'
         }
     }
@@ -318,12 +367,27 @@ const Clicker = (props) => {
     const blackMarker = () => {
         const [top, left] = randomPosition(15);
 
+        let size = '30px';
+        if (gnoxideActive) size = '45px';
+
+        return {
+            top: top,
+            left: left,
+            width: size,
+            height: size,
+            color: 'black'
+        }
+    }
+
+    const orangeMarker = () => {
+        const [top, left] = randomPosition(15);
+
         return {
             top: top,
             left: left,
             width: '30px',
             height: '30px',
-            color: 'black'
+            color: 'orange'
         }
     }
 
@@ -342,10 +406,9 @@ const Clicker = (props) => {
         return [posX, posY]
     }
 
+    //Mine a marker, adding it to the vessel and showing the animation.
     const mine = (e, color) => {
-
         animateMining(e);
-
         addToVessel(color);
     }
 
@@ -364,72 +427,105 @@ const Clicker = (props) => {
         return outcome;
     }
 
+    //Add a given color to the vessel and process it accordingly.
     const addToVessel = (color) => {
-        let tempVessel = vessel;
-        tempVessel.push(color);
+        let tempBlueCount = blueCount;
+        let tempBlackCount = blackCount;
 
-        let blue = 0;
-        let black = 0;
+        //Add the passed color to the related color count.
+        if (color === 'blue') {
+            tempBlueCount++;
+        } else if (color === 'black') {
+            tempBlackCount++;
 
-        tempVessel.forEach(element => {
-            if (element === 'blue') {
-                blue++;
-            } else if (element === 'black') {
-                black++
-            }
-        });
-
-        let newVessel = [];
-
-        for (let i = 0; i < blue; i++) {
-            newVessel.push('blue');
+        //End the current run and give player all hot items.
+        } else if (color === 'orange') {
+            tempBlueCount = 0;
+            tempBlackCount = 0;
+            handleSuccess();
         }
 
-        for (let i = 0; i < black; i++) {
-            newVessel.push('black');
-        }
+        let total = tempBlackCount + tempBlueCount;
 
-        //Take in color percentages and craft according recipes.
-        processColorRatio(blue, black);
+        //Update color count states.
+        setBlueCount(tempBlueCount);
+        setBlackCount(tempBlackCount);
+
 
         //Update color percentages.
-        setBluePercent(Math.round(blue/tempVessel.length * 100));
-        setBlackPercent(Math.round(black/tempVessel.length * 100));
+        setBluePercent(Math.round(tempBlueCount/total * 100));
+        setBlackPercent(Math.round(tempBlackCount/total * 100));
 
-        setVessel(newVessel);
+        //Update displayed vessel colors;
+        const root = document.documentElement;
+        root.style.setProperty('--blue-grow', tempBlueCount);
+        root.style.setProperty('--black-grow', tempBlackCount);
+
+
+        //Take in color percentages and craft according recipes.
+        processColorRatio(tempBlueCount, tempBlackCount);
     }    
+
+    //Reset counts for all elements in the vessel.
+    const emptyVessel = () => {
+
+        setBlueCount(0);
+        setBlackCount(0);
+        setBluePercent(0);
+        setBlackPercent(0);
+
+        //Update displayed vessel colors;
+        const root = document.documentElement;
+        root.style.setProperty('--blue-grow', 0);
+        root.style.setProperty('--black-grow', 0);
+    }
 
     //Check the vessel to see if anything has been crafted.
     const processColorRatio = (blue, black) => {
-        let tempInv = inventory;
+        let tempInv = hotItems;
 
         //Add one gnoxide to inventory.
-        if (blue === black && blue > 2) {
-            tempInv.gnoxide.amount += 1;
-            setInventory(tempInv);
+        if (blue === black && blue >= 4) {
+            tempInv.gnoxide.amount += 1 * multiplier;
+            setHotItems(tempInv);
             animateItemGet('gnoxide');
 
+            emptyVessel();
+            setMultiplier(multiplier + 1);
+
         //Add one carbonant to inventory.
-        } else if (black > 5 && blue === 0) {
-            tempInv.carbonant.amount += 1;
-            setInventory(tempInv);
+        } else if (black >= 6 && blue === 0) {
+            tempInv.carbonant.amount += 1 * multiplier;
+            setHotItems(tempInv);
             animateItemGet('carbonant');
+
+            emptyVessel();
+            setMultiplier(multiplier + 1);
         }
     }
 
-    //Toggle the navbar between the clicker game and global versions.
-    const toggleNavbar = () => {
-        const navbar = document.getElementById('navbar');
-        const clickerNav = document.getElementById('clickernav');
+    //Use an item if available.
+    const consumeItem = (item) => {
 
-        navbar.classList.toggle('hidden');
-        clickerNav.classList.toggle('shown');
+        //Prevent using an item when the player has none.
+        if (inventory[item]['amount'] < 1) {
+            console.log("you've got none of this to use")
+            return;
+        }
+
+        
+        if (item === 'gnoxide' && !gnoxideActive) {
+            setGnoxideActive(true);
+            setTimeRange(750);
+        }
+
+        if (item === 'carbonant' && !carbonantActive) {
+            setCarbonantActive(true);
+        }
+
     }
 
-    const showInventory = () => {
-        const inventory = document.getElementById('clickerinventory');
-        inventory.classList.toggle('shown');
-    }
+
 
     const animateItemGet = (item) => {
         clearTimeout(recentTimer);
@@ -448,41 +544,9 @@ const Clicker = (props) => {
         }, 1000));
     }
 
-    //Toggle visibility on the use item button.
-    const toggleUseButton = (e) => {
-        const box = e.target.parentElement.parentElement;
-        const useBtn = box.querySelector('.usebtn');
-        useBtn.classList.toggle('shown');
-    }
-
-    //Use an item if available.
-    const consumeItem = (item) => {
-
-        //Prevent using an item when the player has none.
-        if (inventory[item]['amount'] < 1) {
-            console.log('sorry, no' + item);
-            return;
-        }
-
-        //The gnoxide ability, which swaps odds for blue and black markers.
-        if (item === 'gnoxide') {
-            let tempBlackChance = blackChance;
 
 
-            tempBlackChance[0] = blueChance[0];
 
-            console.log('temp black chance:', tempBlackChance)
-
-            setBlackChance(tempBlackChance);
-
-            console.log('using gnoxide, chances are: ' + blueChance, blackChance);
-        }
-
-        if (item === 'carbonant') {
-            console.log('using carbonant')
-        }
-
-    }
 
     const fillInventory = () => {
 
@@ -523,26 +587,48 @@ const Clicker = (props) => {
             </Canvas> */}
 
             <div id='gamebox'>
-                <div id='vessel'>
-                    <div id='percentages'>
-                        {bluePercent}% {blackPercent}% {blueChance} {blackChance}
-                    </div>
-                    
-                    {vessel.map((item) => {
-                        return (<div className='vesselcolor' style={{backgroundColor: item}}></div>)
-                    })}
+                <div id='effects'>
+                    {gnoxideActive ? <img src={gnoxideImg} alt=""></img> : null}
+                    {carbonantActive ? <img src={carbonantImg} alt=""></img> : null}
                 </div>
-                <button onClick={fillInventory}>Fill Inventory</button>
+
+                <div id='vessel'>
+                    <div id='vesselblue'>
+                        <div>{blueCount}</div>
+                    </div>
+                    <div id='vesselblack'>
+                        <div>{blackCount}</div>
+                    </div>
+                    <div id='percentages'>
+                        
+                    </div>
+                    <div id='hotitems'>
+                        {Object.keys(hotItems).map((key, index) => {
+                            return <div className='hotitem'>
+                                {/* <div>{key}</div> */}
+                                {hotItems[key].amount > 0 ?
+                                    <div>
+                                        <div className='hotitemcount'>{hotItems[key].amount}</div>
+                                        <img src={hotItems[key].img} alt=""></img>
+                                    </div>
+                                    : null
+                                }
+                            </div>
+                        })}
+                    </div>
+                </div>
+                <button style={{display: 'none'}} onClick={fillInventory}>Fill Inventory</button>
                 <div id='planet'
                     onClick={(e,) => {
-                        addMarkers();
-
+                        
                         if (e.target.id === 'planet') {
-                            
                             handleMiss();
+                        } else if (e.target.style.backgroundColor !== 'orange') {
+                            addMarkers();
                         }
                         
                     }}>
+
                     {markers.map((item) => {
                         return <Marker 
                                     key={uniqid()}
@@ -554,10 +640,21 @@ const Clicker = (props) => {
                                     mine={mine}
                                     timer={timer}
                                     setTimer={setTimer}
-
+                                    timeRange={timeRange}
 
                                 />
                     })}
+                    <div id='multiplier'>
+                        x{multiplier}
+                    </div>
+                    <div id='startbtnbox'>
+                
+                        <button onClick={startGame} id='startbtn' className='shown'>start</button>
+                        <svg>
+                            <rect x="0" y="0"/>
+                        </svg>
+                    </div>
+                    
                 </div>
                 <div id='clickerinventory'>
                     {Object.keys(inventory).map((key, index) => {

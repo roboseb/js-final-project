@@ -16,6 +16,10 @@ const ProgressRing = (props) => {
     const [progress, setProgress] = useState(95);
     const [strokeDashoffset, setStrokeDashOffset] = useState(circumference - progress / 100 * circumference);
 
+    const root = document.documentElement;
+    root.style.setProperty('--time-range', `${props.timer}ms`);
+
+
     const updateProgress = () => {
         setTimeout(() => {
             //console.log('udpating');

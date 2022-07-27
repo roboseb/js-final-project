@@ -68,7 +68,19 @@ July 22nd, 2022
 
     Seems that what I want to do is somehow much more complicated than that. Regardless, I now can use an item to increase black chance to 100% or whatever, but I can't for the life of me just swap the values. Gonna leave it as is for now and take a break.
 
-    
+July 24th, 2022
+
+    Ran out of vape juice yesterday, and am planning on quitting by not buying any more. We'll see how that goes.
+
+    Also, I think I want to have this project finished by the end of the 27th at the very latest. Having a better timeframe should help me keep the scope for this fairly reasonable. Four days, here we go.
+
+July 27th, 2022
+
+    So the day I ran out of vape juice turned out to be quite the challenge, so I decided to take my little break over the last few days while adjusting to less nicotine. Feeling decent today, and I think I have some better ideas to get the game moving. Also I hit my forehead on a drive thru sign and might have brain damage. Maybe it's the good kind.
+
+    Changed some very basic functionality early today, and now everything is going well again. Fuck react, but when it works it's so nice. Gonna fry up some pork today.
+
+
 
 ---To-Do---
 
@@ -91,3 +103,7 @@ July 22nd, 2022
 -fix vessel filling animation
 -save inventory to firestore
 -fix app loading in with full screen buttons
+-option for expanded UI in clicker
+-dark mode
+-add random extra drops from marker nodes
+-have consuming items remove one of that item
