@@ -86,6 +86,20 @@ July 28th, 2022
 
     Today will be adding the ability to create and use the nuke, and deciding whether or not there will be a second planet. Theoretically, most of the framework is already there to simply add some more markers and colour a new planet, so maybe I should give it a shot. Two planets should be decent as a proof of concept. Also, I think once you get to the second planet, you need to keep comboing in that very run to not be sent back to the original planet.
 
+July 29th, 2022
+
+    I'm hoping to have this done in about two days. I need to cut myself off eventually, so that I can actually get it done. Spent way too long with relatively little to show for it.
+
+    Yesterday I spent a few hours just trying to get the green markers to work. See, most markers are gone after a click, and the whole planet resets with new markers. This makes it so that a re-render is not visible. However, green markers require two clicks, and therefore there was a re-render in between the two clicks for some reason, and I'm still not sure why. I fixed this by counting clicks with classes and query selectors instead of useState, and it works like a charm.
+
+    Things still going well. Planet transition is fine, and you can now craft dioxidolatry, which is a nightmare to type out because it's hard to spell and also not a real thing. 
+
+    New mechanic; everytime you increase the multiplier by adding something to hot items, you also decrease the length of the timer. So it's risk/reward beyond even the chance of losing more items as the multiplier increases. Eventually you're gonna have to stop, because eventually the timer will reach 0, making you just lose everything. 
+
+    Second new mechanic; when you clear the first layer of the planet, you get coins, but when you clear the second layer, you get some sort of massive chest, which contains coins in addition to some other stuff. There are also smaller chests which you can get randomly, or at specific multiplier thresholds.
+
+    Fuck me dude. I though the planet cracking animations were cool, but this chest is dope as fuck. I found out by accident that chrome devtools has an animations timing function UI so that I can see real time changes using a graph instead of numbers. Dope as fuck. Most of the game mechanics are there, they should be done by tomorrow. Should also be able to clean up the game UI before the tomorrow's work day is over. Might keep working on this sunday so that I can be done with it. Might still be being optimistic.
+
 
 
 ---To-Do---
@@ -112,7 +126,13 @@ July 28th, 2022
 -option for expanded UI in clicker
 -dark mode
 -add random extra drops from marker nodes
--have consuming items remove one of that item
--add planet transition animation
--add new planet rules/ markers
+DONE-have consuming items remove one of that item
+DONE-add planet transition animation
+DONE-add new planet rules/ markers
 -more consistent signing in without 403s
+DONE-reset test values
+-adjust balancing
+-better animation for moving from hotitems to inventory
+DONE-fix three digit overflow for inventory
+DONE-have start button be whole planet
+DONE-planet hatching animation

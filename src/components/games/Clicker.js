@@ -6,7 +6,7 @@ import { BoxBufferGeometry } from "three";
 
 import {animateMining, animateBeam, animateMiss, animateSuccess, 
         animateTimerExpired, toggleUseButton, toggleNavbar,
-        showInventory} from "../animations";
+        showInventory, crackPlanet, sealPlanet, animateSmallChest} from "../animations";
 
 import ProgressRing from '../ProgressRing';
 
@@ -16,6 +16,13 @@ import tenshiGif from "../../art/tenshi.gif";
 import rodGif from "../../art/rod_ani.gif";
 import gnoxideImg from "../../art/gnoxide.png";
 import carbonantImg from "../../art/carbonant.png";
+import dioxidolatryImg from "../../art/dioxidolatry.png";
+
+import smallChest1 from "../../art/smallchest1.png"
+import smallChest2 from "../../art/smallchest2.png"
+
+
+import { findAllByPlaceholderText } from '@testing-library/dom';
 
 function Planet(props) {
 
@@ -160,19 +167,32 @@ const Marker = (props) => {
             onClick={(e) => {
 
                 // Perform regular mining if not a green marker.
-                if (!props.number) {
+                if (!props.number && props.color !== 'orange') {
                     props.mine(e, props.color);
                     clearTimeout(props.timer);
                     props.addMarkers();
 
+                // Don't add new markers if clicked was orange.
+                } else if (props.color === 'orange') {
+                    props.mine(e, props.color);
+                    clearTimeout(props.timer);
+
                 //Increase green clicked if green marker.
                 } else {    
                     e.target.classList.add('greenclicked');
-                    props.increaseGreen(e, props.color);
+
+                    //Count clicked green markers currently visible.
+                    const clickedGreens = Array.from(document.querySelectorAll('.greenclicked'));
+                    if (clickedGreens.length >= 2) {
+                        console.log('got it!');
+                        props.mine(e, props.color);
+                        clearTimeout(props.timer);
+                        props.addMarkers();
+                    }
                 }
             }}
         >
-            <div>{props.number}</div>
+            {/* <div>{props.number}</div> */}
             <ProgressRing
                 radius={props.height.split('p')[0]}
                 stroke={4}
@@ -227,12 +247,14 @@ const Clicker = (props) => {
 
     const [inventory, setInventory] = useState({
         gnoxide: {amount: 0, img: gnoxideImg},
-        carbonant: {amount: 0, img: carbonantImg}
+        carbonant: {amount: 0, img: carbonantImg},
+        dioxidolatry: {amount: 0, img: dioxidolatryImg}
     });
 
     const [hotItems, setHotItems] = useState({
         gnoxide: {amount: 0, img: gnoxideImg},
-        carbonant: {amount: 0, img: carbonantImg}
+        carbonant: {amount: 0, img: carbonantImg},
+        dioxidolatry: {amount: 0, img: dioxidolatryImg}
     });
 
     const [recentItem, setRecentItem] = useState(null);
@@ -242,15 +264,18 @@ const Clicker = (props) => {
 
     const [blueCount, setBlueCount] = useState(0);
     const [blackCount, setBlackCount] = useState(0);
+    const [greenCount, setGreenCount] = useState(0);
 
     const [bluePercent, setBluePercent] = useState(0);
     const [blackPercent, setBlackPercent] = useState(0);
+    const [greenPercent, setGreenPercent] = useState(0);
 
-    const [greenClicked, setGreenClicked] = useState(0);
 
     const [multiplier, setMultiplier] = useState(1);
     const [gnoxideActive, setGnoxideActive] = useState(false);
     const [carbonantActive, setCarbonantActive] = useState(false);
+    const [dioxidolatryActive, setDioxidolatryActive] = useState(false);
+
     const [currentPlanet, setCurrentPlanet] = useState(0);
 
     const [timeRange, setTimeRange] = useState(2000);
@@ -291,7 +316,7 @@ const Clicker = (props) => {
         }
 
         //Place green markers if current planet is 1.
-        if (currentPlanet === 0) {
+        if (currentPlanet === 1) {
             tempMarkers = (tempMarkers.concat(greenMarkers()));
         }
         
@@ -306,6 +331,13 @@ const Clicker = (props) => {
 
     //Handle a click that doesn't hit a marker.
     const handleMiss = () => {
+
+        // Prevent miss if shield active.
+        if (dioxidolatryActive) {
+            setDioxidolatryActive(false);
+            return;
+        }
+
         const startBtn = document.getElementById('startbtnbox');
         startBtn.classList.toggle('shown');
 
@@ -317,14 +349,21 @@ const Clicker = (props) => {
         setMultiplier(1);
         setCarbonantActive(false);
         setGnoxideActive(false);
+        setDioxidolatryActive(false);
         setTimeRange(2000);
         setCurrentPlanet(0);
-        setGreenClicked(0);
+
+        // Animate planet sealing if planet level went down.
+        if (currentPlanet > 0) {
+            sealPlanet('white');
+        }
+
 
         //Reset all hot item counts to 0;
         setHotItems({
             gnoxide: {amount: 5, img: gnoxideImg},
-            carbonant: {amount: 5, img: carbonantImg}
+            carbonant: {amount: 5, img: carbonantImg},
+            dioxidolatry: {amount: 5, img: dioxidolatryImg}
         });
     }
 
@@ -343,14 +382,16 @@ const Clicker = (props) => {
         setMultiplier(1);
         setCarbonantActive(false);
         setGnoxideActive(false);
+        setDioxidolatryActive(false);
         setTimeRange(2000);
-        setGreenClicked(0);
+
 
         //Add all hot items to inventory.
         let tempInventory = inventory;
 
         tempInventory['gnoxide']['amount'] += hotItems['gnoxide']['amount'];
         tempInventory['carbonant']['amount'] += hotItems['carbonant']['amount'];
+        tempInventory['dioxidolatry']['amount'] += hotItems['dioxidolatry']['amount'];
 
         //Animate moving items to the inventory.
         if (hotItems['gnoxide']['amount'] > 0) {
@@ -360,13 +401,14 @@ const Clicker = (props) => {
         setTimeout(() => {
             if (hotItems['carbonant']['amount'] > 0) {
                 animateItemGet('carbonant');
-            } 
+            }
         }, 1000);
 
         //Reset all hot item counts to 0;
         setHotItems({
             gnoxide: {amount: 0, img: gnoxideImg},
-            carbonant: {amount: 0, img: carbonantImg}
+            carbonant: {amount: 0, img: carbonantImg},
+            dioxidolatry: {amount: 0, img: dioxidolatryImg}
         });
     }
 
@@ -424,10 +466,18 @@ const Clicker = (props) => {
 
     //Get dimensions and color for craeting an orange marker.
     const greenMarkers = () => {
-        const [top, left] = randomPosition(20);
+        const [top, left] = randomPosition(50);
 
         let size = '40px';
         if (gnoxideActive) size = '60px';
+
+        // Roll for placement of the second green marker.
+        let top2;
+        if (roll(50)) {
+            top2 = 30;
+        } else {
+            top2 = -30;
+        }
 
         return [{
             top: top,
@@ -437,7 +487,7 @@ const Clicker = (props) => {
             color: 'darkolivegreen',
             number: 1
         }, {
-            top: top + 30,
+            top: top + top2,
             left: left + 30,
             width: size,
             height: size,
@@ -461,10 +511,20 @@ const Clicker = (props) => {
         return [posX, posY]
     }
 
-    //Mine a marker, adding it to the vessel and showing the animation.
+    // Mine a marker, adding it to the vessel and showing the animation.
+    // Then, roll for random extra rewards.
     const mine = (e, color) => {
         animateMining(e);
         addToVessel(color);
+
+        // Roll to instantly get coins
+        if (roll(100)) {
+            let amount = Math.round(Math.random() * 20);
+            props.updateCoins(amount)
+
+            console.log('amount' + amount);
+            animateSmallChest();
+        }
     }
 
     //Roll a 100-sided die and return whether it is less than or
@@ -486,6 +546,7 @@ const Clicker = (props) => {
     const addToVessel = (color) => {
         let tempBlueCount = blueCount;
         let tempBlackCount = blackCount;
+        let tempGreenCount = greenCount
 
         //Add the passed color to the related color count.
         if (color === 'blue') {
@@ -498,27 +559,32 @@ const Clicker = (props) => {
             tempBlueCount = 0;
             tempBlackCount = 0;
             handleSuccess();
+        } else if (color === 'darkolivegreen') {
+            tempGreenCount++;
         }
 
-        let total = tempBlackCount + tempBlueCount;
+        let total = tempBlackCount + tempBlueCount + tempGreenCount;
 
         //Update color count states.
         setBlueCount(tempBlueCount);
         setBlackCount(tempBlackCount);
+        setGreenCount(tempGreenCount);
 
 
         //Update color percentages.
         setBluePercent(Math.round(tempBlueCount/total * 100));
         setBlackPercent(Math.round(tempBlackCount/total * 100));
+        setGreenPercent(Math.round(tempGreenCount/total * 100));
 
         //Update displayed vessel colors;
         const root = document.documentElement;
         root.style.setProperty('--blue-grow', tempBlueCount);
         root.style.setProperty('--black-grow', tempBlackCount);
+        root.style.setProperty('--green-grow', tempGreenCount);
 
 
         //Take in color percentages and craft according recipes.
-        processColorRatio(tempBlueCount, tempBlackCount);
+        processColorRatio(tempBlueCount, tempBlackCount, tempGreenCount);
     }    
 
     //Reset counts for all elements in the vessel.
@@ -526,17 +592,21 @@ const Clicker = (props) => {
 
         setBlueCount(0);
         setBlackCount(0);
+        setGreenCount(0);
+
         setBluePercent(0);
         setBlackPercent(0);
+        setGreenPercent(0);
 
         //Update displayed vessel colors;
         const root = document.documentElement;
         root.style.setProperty('--blue-grow', 0);
         root.style.setProperty('--black-grow', 0);
+        root.style.setProperty('--green-grow', 0);
     }
 
     //Check the vessel to see if anything has been crafted.
-    const processColorRatio = (blue, black) => {
+    const processColorRatio = (blue, black, green) => {
         let tempInv = hotItems;
 
         //Add one gnoxide to inventory.
@@ -547,6 +617,7 @@ const Clicker = (props) => {
 
             emptyVessel();
             setMultiplier(multiplier + 1);
+            setTimeRange(timeRange - 50);
 
         //Add one carbonant to inventory.
         } else if (black >= 6 && blue === 0) {
@@ -556,6 +627,17 @@ const Clicker = (props) => {
 
             emptyVessel();
             setMultiplier(multiplier + 1);
+            setTimeRange(timeRange - 50);
+
+        // Add one dioxidolatry to inventory.
+        } else if (green >= 4 && blue === 1) {
+            tempInv.dioxidolatry.amount += 1 * multiplier;
+            setHotItems(tempInv);
+            animateItemGet('dioxidolatry');
+
+            emptyVessel();
+            setMultiplier(multiplier + 1);
+            setTimeRange(timeRange - 50);
         }
     }
 
@@ -570,8 +652,17 @@ const Clicker = (props) => {
                 props.updateCoins(200);
                 handleSuccess();
                 setCurrentPlanet(1);
+
+                crackPlanet('white');
         }
-    }, [hotItems.carbonant.amount, hotItems.gnoxide.amount]);
+
+        // If dioxidolatry is at least 100 and player is on the second
+        // planet, destroy the planet and give the player a chest.
+        if (hotItems['dioxidolatry']['amount'] >= 100 &&
+            currentPlanet === 1) {
+            alert('planet destroyed! chest get!')
+        }
+    }, [hotItems.carbonant.amount, hotItems.gnoxide.amount, hotItems.dioxidolatry.amount]);
 
     //Use an item if available.
     const consumeItem = (item) => {
@@ -582,16 +673,25 @@ const Clicker = (props) => {
             return;
         }
 
+        let tempInv = inventory;
+        inventory[item]['amount'] -= 1;
+        setInventory(tempInv);
+
         
         if (item === 'gnoxide' && !gnoxideActive) {
             setGnoxideActive(true);
             setTimeRange(1200);
         }
-        props.addMarkers();
+
+        if (item === 'carbonant' && !carbonantActive) {
+            setCarbonantActive(true);
+        }
+
+        if (item === 'dioxidolatry' && !dioxidolatryActive) {
+            setDioxidolatryActive(true);
+        }
 
     }
-
-
 
     const animateItemGet = (item) => {
         clearTimeout(recentTimer);
@@ -609,40 +709,6 @@ const Clicker = (props) => {
             recentImg.classList.remove('shown');
         }, 1000));
     }
-
-
-
-
-
-    const fillInventory = () => {
-
-        let tempInv = inventory;
-
-        tempInv.gnoxide.amount = 20;
-        tempInv.carbonant.amount = 20;
-
-        setInventory(tempInv);
-    }
-
-    // Increment clicked green markers, and process them if two have been clicked.
-    const increaseGreen = (e, color) => {
-        let tempClicked = greenClicked;
-        tempClicked += 1;
-
-        console.log(tempClicked);
-        
-        //Mine the marker and reset the board if both green have been found.
-        if (tempClicked > 1) {
-            mine(e, color);
-            clearTimeout(timer);
-            addMarkers();
-            setGreenClicked(0);
-        } else {
-            setGreenClicked(tempClicked);
-            
-        }
-    }
-
 
     return (
         <div id='clicker'>
@@ -675,6 +741,11 @@ const Clicker = (props) => {
                 <div id='effects'>
                     {gnoxideActive ? <img src={gnoxideImg} alt=""></img> : null}
                     {carbonantActive ? <img src={carbonantImg} alt=""></img> : null}
+                    {dioxidolatryActive ? <img src={dioxidolatryImg} alt=""></img> : null}
+                </div>
+
+                <div id='chestbox'>
+                    <img id='smallchestimg' src={gnoxideImg} alt=""></img>
                 </div>
 
                 <div id='vessel'>
@@ -683,6 +754,9 @@ const Clicker = (props) => {
                     </div>
                     <div id='vesselblack'>
                         <div>{blackCount}</div>
+                    </div>
+                    <div id='vesselgreen'>
+                        <div>{greenCount}</div>
                     </div>
                     <div id='percentages'>
                         
@@ -702,13 +776,11 @@ const Clicker = (props) => {
                         })}
                     </div>
                 </div>
-                <button style={{display: 'none'}} onClick={fillInventory}>Fill Inventory</button>
+
                 <div id='planet'
                     style={currentPlanet === 1 ? {backgroundColor: '#f4b8c4'} : null}
-
+                    className='cracked'
                     onClick={(e,) => {
-
-                        
                         
                         if (e.target.id === 'planet') {
                             handleMiss();
@@ -716,6 +788,11 @@ const Clicker = (props) => {
                         }
                         
                     }}>
+                    <div id='planetleft'></div>
+                    <div id='planetright'></div>
+                    <svg id='crackbox'>
+                        <polyline points="30,0 30,500"/>
+                    </svg>
 
                     {markers.map((item) => {
                         return <Marker 
@@ -731,7 +808,6 @@ const Clicker = (props) => {
                                     timeRange={timeRange}
                                     number={item.number}
                                     addMarkers={addMarkers}
-                                    increaseGreen={increaseGreen}
 
                                 />
                     })}
@@ -750,10 +826,13 @@ const Clicker = (props) => {
                 <div id='clickerinventory'>
                     {Object.keys(inventory).map((key, index) => {
                         return <div className='clickerinvitem'>
-                            <div>{key}</div>
-                            <div className='countbox'>
-                                {inventory[key].amount}<img src={inventory[key].img} alt="" onClick={e => toggleUseButton(e)}></img>
+                            <div className='namecountbox'>
+                                <div>{key}</div>
+                                <div className="invcount">{inventory[key].amount}</div>
                             </div>
+                       
+                            <img src={inventory[key].img} alt="" onClick={e => toggleUseButton(e)}></img>
+                            
                             <div className='usebtn' onClick={() => consumeItem(key)}>
                                 <div>use</div>
                                 <img src={inventory[key].img} alt=""></img>

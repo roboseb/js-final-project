@@ -82,7 +82,7 @@ const animateTimerExpired = () => {
 
 //Toggle visibility on the use item button.
 const toggleUseButton = (e) => {
-    const box = e.target.parentElement.parentElement;
+    const box = e.target.parentElement;
     const useBtn = box.querySelector('.usebtn');
     useBtn.classList.toggle('shown');
 }
@@ -101,7 +101,61 @@ const showInventory = () => {
     inventory.classList.toggle('shown');
 }
 
+// Animate the planet cracking in two.
+const crackPlanet = (color) => {
+    const crackBox = document.getElementById('crackbox');
+    const left = document.getElementById('planetleft');
+    const right = document.getElementById('planetright');
+
+    left.style.backgroundColor = color;
+    right.style.backgroundColor = color;
+
+    crackBox.classList.remove('shown');
+    left.classList.remove('shown', 'shownreverse');
+    right.classList.remove('shown', 'shownreverse');
+
+    void crackBox.offsetWidth;
+    void left.offsetWidth;
+    void right.offsetWidth;
+
+    crackBox.classList.add('shown');
+    left.classList.add('shown');
+    right.classList.add('shown');
+}
+
+const sealPlanet = (color) => {
+    const left = document.getElementById('planetleft');
+    const right = document.getElementById('planetright');
+
+    left.style.backgroundColor = color;
+    right.style.backgroundColor = color;
+;
+    left.classList.remove('shown', 'shownreverse');
+    right.classList.remove('shown', 'shownreverse');
+
+    void left.offsetWidth;
+    void right.offsetWidth;
+
+    left.classList.add('shownreverse');
+    right.classList.add('shownreverse');
+}
+
+// Animate getting a small chest.
+const animateSmallChest = (image) => {
+    const chest = document.getElementById('chestbox');
+    chest.classList.remove('shown');
+    void chest.offsetWidth;
+    chest.classList.add('shown');
+
+    animateSmallChestItem(image);
+}
+
+const animateSmallChestItem = (image) => {
+    
+}   
+
 
 
 export {animateMining, animateBeam, animateMiss, animateSuccess, 
-        animateTimerExpired, toggleUseButton, toggleNavbar, showInventory}
+        animateTimerExpired, toggleUseButton, toggleNavbar, showInventory,
+        crackPlanet, sealPlanet, animateSmallChest}

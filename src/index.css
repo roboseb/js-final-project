@@ -2,6 +2,7 @@
     --mining-color: 'black';
     --blue-grow: 0;
     --black-grow: 0;
+    --green-grow: 0;
     --time-range: 1000;
 }
 
@@ -204,7 +205,7 @@ body {
 
     filter: opacity(0.2);
     font-weight: bolder;
-    font-size: 25vw;
+    font-size: 40vw;
     pointer-events: none;
 }
 
@@ -235,6 +236,58 @@ body {
     height: 40px;
 }
 
+#gamebox>#chestbox {
+    position: absolute;
+    bottom: 40px;
+    left: 40px;
+    z-index: 2;
+
+    height: 50px;
+    width: 50px;
+    transform: scale(2);
+    display: none;
+
+    background-image: url("../src/art/smallchest1.png");
+    animation: smallchest 1.2s linear, smallchestbounce 1.2s cubic-bezier(1,-0.32, 1, 0.14);
+
+    image-rendering: -moz-crisp-edges;
+    image-rendering: -webkit-crisp-edges;
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
+    pointer-events: none;
+}
+
+#gamebox>#chestbox.shown {
+    display: block;
+    filter: opacity(0);
+}
+
+@keyframes smallchest {
+    0% {background-image: url("../src/art/smallchest1.png");}
+    75% {background-image: url("../src/art/smallchest1.png");}
+    76% {background-image: url("../src/art/smallchest2.png");}
+    100% {background-image: url("../src/art/smallchest2.png");}
+}
+
+@keyframes smallchestbounce {
+    0% {transform: scale(2); filter: opacity(1);}
+    35% {transform: scale(3); filter: opacity(1);}
+    75% {transform: scale(2); filter: opacity(1);}
+    100% {transform: scale(2); filter: opacity(1);}
+}
+
+#gamebox>#chestbox>#smallchestimg {
+    filter: drop-shadow(5px 5px 5px black);
+    animation: smallchestitem 1.2s cubic-bezier(1,-0.32, 1, 0.14);
+}
+
+@keyframes smallchestitem {
+    0% {transform: translateY(0%) scale(0.5); filter: opacity(0)}
+    35% {transform: translateY(0%) scale(0.5); filter: opacity(0)}
+    75% {transform: translateY(-50%) scale(0.5); filter: opacity(1)}
+    100% {transform: translateY(0%) scale(0.5); filter: opacity(1)}
+}
+
 #clicker #planet {
     height: 90vw;
     width: 90vw;
@@ -242,13 +295,6 @@ body {
 
     background-color: #fff;
     position: relative;
-
-    animation: test 1s;
-}
-
-@keyframes test {
-    from {background-color: turquoise;}
-    to {background-color: snow;}
 }
 
 #clicker .marker {
@@ -260,6 +306,7 @@ body {
     top : 50%;
     left: 50%;
     transform: translate(-50%, -50%);
+    z-index: 2;
 
     display: flex;
     align-items: center;
@@ -270,12 +317,8 @@ body {
 }
 
 @keyframes marker {
-    from {filter: opacity(0)}
-    to {filter: opacity(1)}
-}
-
-#clicker .marker:hover {
-    filter: brightness(0.3);
+    from {filter: opacity(0); transform: translate(-50%, -50%) scale(0.5)}
+    to {filter: opacity(1); transform: translate(-50%, -50%) scale(1)}
 }
 
 #clicker .marker.clicked {
@@ -286,6 +329,8 @@ body {
 #clicker .marker.greenclicked {
     pointer-events: none;
     filter: opacity(0.6);
+    transform: translate(-50%, -50%) scale(0.5);
+
 }
 
 #clicker .marker>div {
@@ -353,9 +398,9 @@ circle {
 }
 
 @keyframes startbtn {
-    0% {stroke-dashoffset: 0; stroke-width: 5; stroke-linecap: round;}
-    50% {stroke-dashoffset: 60; stroke-width: 20; stroke-linecap: square;}
-    100% {stroke-dashoffset: 120; stroke-width: 5; stroke-linecap: round;}
+    0% {stroke-dashoffset: 0; stroke-width: 5;}
+    50% {stroke-dashoffset: 60; stroke-width: 20;}
+    100% {stroke-dashoffset: 120; stroke-width: 5;}
 }
 
 #startbtn {
@@ -364,17 +409,26 @@ circle {
 
     font-size: 3rem;
     z-index: 1;
-
-
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
+
+    height: 90vw;
+    width: 90vw;
+    border-radius: 100%;
+    animation: inout 0.6s infinite;
 }
 
 #startbtnbox.shown {
     display: block;
 }   
+
+@keyframes inout {
+    0% {font-size: 3rem;}
+    30% {font-size: 4.5rem;}
+    100% {font-size: 3rem;}
+}
 
 #mininganimation {
     height: 60px;
@@ -424,14 +478,121 @@ circle {
     100% {background-color: white;}
 }
 
-#planet.timerexpired {
-    animation: timerexpired 0.5s;
+#planet.cracked {
+    animation: planetcracked 1s infinite;
 }
 
-@keyframes timerexpired {
-    0% {background-color: white;}
-    50% {background-color: black;}
-    100% {background-color: white;}
+
+#planet>#planetleft {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 2;
+    display: none;
+
+    height: 100%;
+    width: 50%;
+    background-color: inherit;
+
+    border-top-left-radius: 364px;
+    border-bottom-left-radius: 364px;
+    transform-origin: bottom right;
+    animation: leftcrack 2s;
+    pointer-events: none;
+}
+
+#planet>#planetleft.shown {
+    display: block;
+    filter: opacity(0);
+}
+
+#planet>#planetleft.shownreverse {
+    display: block;
+    filter: opacity(0);
+    animation-direction: reverse;
+}
+
+@keyframes leftcrack {
+    0% {transform: rotate(0deg); filter: opacity(1)}
+    50% {transform: rotate(0deg); filter: opacity(1) drop-shadow(5px 5px 5px rgba(0, 0, 0, 0.733))}
+    100% {transform: rotate(-90deg) translateX(-100%); filter: drop-shadow(20px 5px 15px rgba(0, 0, 0, 0.787))}
+}
+
+#planet>#planetright {
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: 2;
+    display: none;
+
+    border-radius: 0 200% 200% 0;
+    height: 100%;
+    width: 50%;
+    background-color: inherit;
+
+    border-top-right-radius: 364px;
+    border-bottom-right-radius: 364px;
+    transform-origin: bottom left;
+    animation: rightcrack 2s;
+    pointer-events: none;
+}
+
+#planet>#planetright.shown {
+    display: block;
+    filter: opacity(0);
+}
+
+#planet>#planetright.shownreverse {
+    display: block;
+    filter: opacity(0);
+    animation-direction: reverse;
+}
+
+@keyframes rightcrack {
+    0% {transform: rotate(0deg); filter: opacity(1)}
+    50% {transform: rotate(0deg); filter: opacity(1) drop-shadow(-5px 5px 5px rgba(0, 0, 0, 0.205))}
+    100% {transform: rotate(90deg) translateX(100%); filter: drop-shadow(-20px 5px 15px rgba(0, 0, 0, 0.787))}
+}
+
+svg#crackbox {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    z-index: 2;
+    display: none;
+
+    transform: translate(-30px, -50%);
+
+    width: 50%;
+    height: 100%;
+    pointer-events: none;
+}
+
+svg#crackbox.shown {
+    display: block;
+}
+
+
+svg#crackbox>polyline {
+    position: absolute;
+
+    fill: none;
+    stroke: black;
+    stroke-width: 3;
+    stroke-dasharray: 20 20;
+    stroke-linecap: round;
+
+    animation: crack 2s linear forwards;
+
+}
+
+@keyframes crack {
+    0% {stroke-dasharray: 20 500;}
+    20% {stroke-dasharray: 20 60;}
+    40% {stroke-dasharray: 20 5; stroke-width: 10;}
+    50% {stroke-dasharray: 20 0; stroke-width: 16;}
+    50% {stroke-dasharray: 20 0; stroke-width: 0;}
+    100% {stroke-dasharray: 20 0; stroke-width: 0;}
 }
 
 .beambox {
@@ -497,7 +658,16 @@ circle {
     overflow: hidden;
 }
 
-#vessel>#vesselblack>div, #vessel>#vesselblue>div {
+#vessel>#vesselgreen {
+    background-color: darkolivegreen;
+    flex-grow: var(--green-grow);
+    position: relative;
+
+    transition: all 0.5s;
+    overflow: hidden;
+}
+
+#vessel>#vesselblack>div, #vessel>#vesselblue>div, #vessel>#vesselgreen>div {
     color: white;
     font-size: 2.5rem;
 
@@ -579,8 +749,10 @@ circle {
 
 #clickerinventory>.clickerinvitem {
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-end;
     align-items: center;
+    gap: 10px;
+
     padding: 10px;
 
     background-color: wheat;
@@ -588,14 +760,20 @@ circle {
     position: relative;
 }
 
-#clickerinventory>.clickerinvitem>.countbox {
+#clickerinventory>.clickerinvitem>.namecountbox {
     display: flex;
-    align-items: center;
-    gap: 5px;
-    font-size: 2rem;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: -20px;
+    font-size: 1rem;
 
     position: relative;
 }
+
+#clickerinventory>.clickerinvitem>.namecountbox>.invcount {
+    font-size: 2rem;
+}
+
 
 .usebtn {
     position: absolute;
@@ -612,6 +790,7 @@ circle {
     border-left: none;
     padding-left: 10px;
     padding-right: 5px;
+    filter: opacity(0.5);
 
     display: flex;
     flex-direction: column;
