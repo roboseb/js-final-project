@@ -80,6 +80,12 @@ July 27th, 2022
 
     Changed some very basic functionality early today, and now everything is going well again. Fuck react, but when it works it's so nice. Gonna fry up some pork today.
 
+July 28th, 2022
+
+    Great progress yesterday, and today started off with an ok looking start button animation. Probably will be about a full day to style this project once it's done.
+
+    Today will be adding the ability to create and use the nuke, and deciding whether or not there will be a second planet. Theoretically, most of the framework is already there to simply add some more markers and colour a new planet, so maybe I should give it a shot. Two planets should be decent as a proof of concept. Also, I think once you get to the second planet, you need to keep comboing in that very run to not be sent back to the original planet.
+
 
 
 ---To-Do---
@@ -107,3 +113,6 @@ July 27th, 2022
 -dark mode
 -add random extra drops from marker nodes
 -have consuming items remove one of that item
+-add planet transition animation
+-add new planet rules/ markers
+-more consistent signing in without 403s

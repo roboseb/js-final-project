@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect, Suspense } from 'react'
+import React, { useRef, useState, useEffect, useMemo, Suspense } from 'react'
 import { Canvas, useFrame, useLoader} from "@react-three/fiber";
 import { MinEquation, TextureLoader } from 'three';
 import { MeshLambertMaterial } from "three";
@@ -147,6 +147,8 @@ function Moon(props) {
 }
 
 const Marker = (props) => {
+    console.log('rendered!');
+
     return (
         <div 
             className='marker'
@@ -156,10 +158,21 @@ const Marker = (props) => {
                     width: props.width,
                     backgroundColor: props.color}}
             onClick={(e) => {
-                props.mine(e, props.color);
-                clearTimeout(props.timer);
+
+                // Perform regular mining if not a green marker.
+                if (!props.number) {
+                    props.mine(e, props.color);
+                    clearTimeout(props.timer);
+                    props.addMarkers();
+
+                //Increase green clicked if green marker.
+                } else {    
+                    e.target.classList.add('greenclicked');
+                    props.increaseGreen(e, props.color);
+                }
             }}
         >
+            <div>{props.number}</div>
             <ProgressRing
                 radius={props.height.split('p')[0]}
                 stroke={4}
@@ -207,6 +220,8 @@ const Marker = (props) => {
 //     );
 // }
 
+
+
 const Clicker = (props) => {
     const [markers, setMarkers] = useState([]);
 
@@ -231,16 +246,21 @@ const Clicker = (props) => {
     const [bluePercent, setBluePercent] = useState(0);
     const [blackPercent, setBlackPercent] = useState(0);
 
+    const [greenClicked, setGreenClicked] = useState(0);
+
     const [multiplier, setMultiplier] = useState(1);
     const [gnoxideActive, setGnoxideActive] = useState(false);
     const [carbonantActive, setCarbonantActive] = useState(false);
+    const [currentPlanet, setCurrentPlanet] = useState(0);
 
-    const [timeRange, setTimeRange] = useState(1050);
+    const [timeRange, setTimeRange] = useState(2000);
 
     //Start placing markers.
     const startGame = () => {
-        const startBtn = document.getElementById('startbtn');
+        const startBtn = document.getElementById('startbtnbox');
         startBtn.classList.toggle('shown');
+
+        addMarkers();
     }
 
     //Add a new marker to the planet.
@@ -263,11 +283,16 @@ const Clicker = (props) => {
 
         //Increase the chances of having an orange marker with carbonant active.
         let orangeOdds = 10;
-        if (carbonantActive) orangeOdds = 100;
+        if (carbonantActive) orangeOdds = 50;
 
         //Roll for placing an orange marker.
         if (roll(orangeOdds) === true) {
             tempMarkers = (tempMarkers.concat(orangeMarker()));
+        }
+
+        //Place green markers if current planet is 1.
+        if (currentPlanet === 0) {
+            tempMarkers = (tempMarkers.concat(greenMarkers()));
         }
         
 
@@ -281,7 +306,7 @@ const Clicker = (props) => {
 
     //Handle a click that doesn't hit a marker.
     const handleMiss = () => {
-        const startBtn = document.getElementById('startbtn');
+        const startBtn = document.getElementById('startbtnbox');
         startBtn.classList.toggle('shown');
 
         clearTimeout(timer);
@@ -292,12 +317,14 @@ const Clicker = (props) => {
         setMultiplier(1);
         setCarbonantActive(false);
         setGnoxideActive(false);
-        setTimeRange(1050);
+        setTimeRange(2000);
+        setCurrentPlanet(0);
+        setGreenClicked(0);
 
         //Reset all hot item counts to 0;
         setHotItems({
-            gnoxide: {amount: 0, img: gnoxideImg},
-            carbonant: {amount: 0, img: carbonantImg}
+            gnoxide: {amount: 5, img: gnoxideImg},
+            carbonant: {amount: 5, img: carbonantImg}
         });
     }
 
@@ -305,8 +332,10 @@ const Clicker = (props) => {
     const handleSuccess = () => {
         console.log('grats!');
 
-        const startBtn = document.getElementById('startbtn');
+        const startBtn = document.getElementById('startbtnbox');
         startBtn.classList.toggle('shown');
+
+        clearTimeout(timer);
         
         animateSuccess();
         setMarkers([]);
@@ -314,7 +343,8 @@ const Clicker = (props) => {
         setMultiplier(1);
         setCarbonantActive(false);
         setGnoxideActive(false);
-        setTimeRange(1050);
+        setTimeRange(2000);
+        setGreenClicked(0);
 
         //Add all hot items to inventory.
         let tempInventory = inventory;
@@ -379,6 +409,7 @@ const Clicker = (props) => {
         }
     }
 
+    //Get dimensions and color for craeting an orange marker.
     const orangeMarker = () => {
         const [top, left] = randomPosition(15);
 
@@ -389,6 +420,30 @@ const Clicker = (props) => {
             height: '30px',
             color: 'orange'
         }
+    }
+
+    //Get dimensions and color for craeting an orange marker.
+    const greenMarkers = () => {
+        const [top, left] = randomPosition(20);
+
+        let size = '40px';
+        if (gnoxideActive) size = '60px';
+
+        return [{
+            top: top,
+            left: left,
+            width: size,
+            height: size,
+            color: 'darkolivegreen',
+            number: 1
+        }, {
+            top: top + 30,
+            left: left + 30,
+            width: size,
+            height: size,
+            color: 'darkolivegreen',
+            number: 2
+        }];
     }
 
     //Return a random XY position within the planet given a radius.
@@ -504,6 +559,20 @@ const Clicker = (props) => {
         }
     }
 
+    //Check to see if the player can craft anything with their hot items.
+    useEffect(() => {
+
+        //If gnoxide and carbonant are over a threshold, nuke the
+        //planet, give the player coins, and move to the next planet.
+        if (hotItems['gnoxide']['amount'] >= 5 && 
+            hotItems['carbonant']['amount'] >= 6) {
+
+                props.updateCoins(200);
+                handleSuccess();
+                setCurrentPlanet(1);
+        }
+    }, [hotItems.carbonant.amount, hotItems.gnoxide.amount]);
+
     //Use an item if available.
     const consumeItem = (item) => {
 
@@ -516,12 +585,9 @@ const Clicker = (props) => {
         
         if (item === 'gnoxide' && !gnoxideActive) {
             setGnoxideActive(true);
-            setTimeRange(750);
+            setTimeRange(1200);
         }
-
-        if (item === 'carbonant' && !carbonantActive) {
-            setCarbonantActive(true);
-        }
+        props.addMarkers();
 
     }
 
@@ -556,6 +622,25 @@ const Clicker = (props) => {
         tempInv.carbonant.amount = 20;
 
         setInventory(tempInv);
+    }
+
+    // Increment clicked green markers, and process them if two have been clicked.
+    const increaseGreen = (e, color) => {
+        let tempClicked = greenClicked;
+        tempClicked += 1;
+
+        console.log(tempClicked);
+        
+        //Mine the marker and reset the board if both green have been found.
+        if (tempClicked > 1) {
+            mine(e, color);
+            clearTimeout(timer);
+            addMarkers();
+            setGreenClicked(0);
+        } else {
+            setGreenClicked(tempClicked);
+            
+        }
     }
 
 
@@ -608,8 +693,8 @@ const Clicker = (props) => {
                                 {/* <div>{key}</div> */}
                                 {hotItems[key].amount > 0 ?
                                     <div>
-                                        <div className='hotitemcount'>{hotItems[key].amount}</div>
                                         <img src={hotItems[key].img} alt=""></img>
+                                        <div className='hotitemcount'>{hotItems[key].amount}</div>
                                     </div>
                                     : null
                                 }
@@ -619,12 +704,15 @@ const Clicker = (props) => {
                 </div>
                 <button style={{display: 'none'}} onClick={fillInventory}>Fill Inventory</button>
                 <div id='planet'
+                    style={currentPlanet === 1 ? {backgroundColor: '#f4b8c4'} : null}
+
                     onClick={(e,) => {
+
+                        
                         
                         if (e.target.id === 'planet') {
                             handleMiss();
-                        } else if (e.target.style.backgroundColor !== 'orange') {
-                            addMarkers();
+                            console.log('planet clicked');
                         }
                         
                     }}>
@@ -641,17 +729,20 @@ const Clicker = (props) => {
                                     timer={timer}
                                     setTimer={setTimer}
                                     timeRange={timeRange}
+                                    number={item.number}
+                                    addMarkers={addMarkers}
+                                    increaseGreen={increaseGreen}
 
                                 />
                     })}
                     <div id='multiplier'>
                         x{multiplier}
                     </div>
-                    <div id='startbtnbox'>
+                    <div id='startbtnbox' className='shown'>
                 
-                        <button onClick={startGame} id='startbtn' className='shown'>start</button>
+                        <button onClick={startGame} id='startbtn'>start</button>
                         <svg>
-                            <rect x="0" y="0"/>
+                            <polyline points="0,0 150,0 150,75 0,75 0,0"/>
                         </svg>
                     </div>
                     

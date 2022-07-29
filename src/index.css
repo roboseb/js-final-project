@@ -242,6 +242,13 @@ body {
 
     background-color: #fff;
     position: relative;
+
+    animation: test 1s;
+}
+
+@keyframes test {
+    from {background-color: turquoise;}
+    to {background-color: snow;}
 }
 
 #clicker .marker {
@@ -276,11 +283,17 @@ body {
     border: 5px solid black;
 }
 
+#clicker .marker.greenclicked {
+    pointer-events: none;
+    filter: opacity(0.6);
+}
+
 #clicker .marker>div {
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
+    pointer-events: none;
 }
 
 
@@ -307,51 +320,59 @@ circle {
     left: 50%;
     transform: translate(-50%, -50%);
 
-    background-color: red;
+    width: 150px;
+    height: 75px;
+
+    display: none;
 }
 
 #startbtnbox>svg {
     position: absolute;
-    top: 0;
-    left: 0;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 
-    width: 100%;
-    height: 100%;
+    width: 150%;
+    height: 150%;
+    pointer-events: none;
 }
 
 
-#startbtnbox>svg>rect {
-    width: 100%;
-    height: 100%;
-    fill: blue;
-    stroke: pink;
-    stroke-width: 15;
-    fill-opacity: 0.1;
-    stroke-opacity: 0.9;
+#startbtnbox>svg>polyline {
+    position: absolute;
+    transform: translate(38px, 20px);
 
-    animation: startbtn 1s infinite;
+    fill: none;
+    stroke: black;
+    stroke-width: 10;
+    stroke-dasharray: 20 20;
+    stroke-linecap: round;
+
+    animation: startbtn 1s linear forwards infinite;
+
 }
 
 @keyframes startbtn {
-    0% {stroke-dashoffset: 1000; stroke-width: 10;}
-    80% {stroke-dashoffset: 0; stroke-width: 20;}
-    100% {stroke-dashoffset: -500; stroke-width: 10;}
+    0% {stroke-dashoffset: 0; stroke-width: 5; stroke-linecap: round;}
+    50% {stroke-dashoffset: 60; stroke-width: 20; stroke-linecap: square;}
+    100% {stroke-dashoffset: 120; stroke-width: 5; stroke-linecap: round;}
 }
 
 #startbtn {
     border: none;
+    background-color: transparent;
 
     font-size: 3rem;
     z-index: 1;
-    display: none;
-    animation: startbtn 1s infinite;
+
+
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 }
 
-@keyframes startbtn {
-    0% {}
-}
-
-#startbtn.shown {
+#startbtnbox.shown {
     display: block;
 }   
 
@@ -446,6 +467,7 @@ circle {
     position: absolute;
     top: 0;
     right: 0;
+    z-index: 1;
 
     width: 50%;
     height: 75px;
@@ -487,6 +509,8 @@ circle {
 
 #vessel>#hotitems {
     display: flex;
+    gap: 5px;
+
     position: absolute;
     bottom: 0;
     left: 0;
@@ -505,22 +529,11 @@ circle {
 
 #hotitems>.hotitem>div {
     position: relative;
+    display: flex;
 }
 
 #hotitems>.hotitem .hotitemcount {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    height: 100%;
-    width: 100%;
-    transform: translate(0, 90%);
-    z-index: 1;
-
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    font-size: 2rem;
+    font-size: 1rem;
     font-weight: bolder;
 }
 
