@@ -5,6 +5,12 @@
     --green-grow: 0;
     --time-range: 1000;
     --fluid-height: 0%;
+
+    --acidgreen: #C4C425;
+    --rainforest: #097060;
+    --viridian: #22978F;
+
+    --snap-timing: cubic-bezier(0.1, 1, 0.1, 1);
 }
 
 @font-face {
@@ -12,8 +18,14 @@
     src: url("./fonts/magnawave.otf");
 }
 
+@font-face {
+    font-family: cafe;
+    src: url("./fonts/cafe.ttf");
+}
+
 body {
-  margin: 0;
+    margin: 0;
+    font-family: cafe, sans-serif;
 }
 
 #app {
@@ -23,13 +35,11 @@ body {
 
     display: grid;
     grid-template-columns: 100vw;
-    grid-template-rows: 10vh 1fr 25vw;
-    font-family: magnawave, sans-serif;
+    grid-template-rows: 10vh 1fr 8vh;
 }
 
 #header {
-    background-color: black;
-    color: white;
+    background-color: var(--acidgreen);
 
     width: 100vw;
     flex-grow: 1;
@@ -38,6 +48,7 @@ body {
     display: flex;
     align-items: center;
     gap: 20px;
+    font-family: magnawave, sans-serif;
 }
 
 #header>img {
@@ -62,10 +73,8 @@ body {
 
 #navbar {
     width: 100vw;
-
-    flex-grow: 1;
     display: flex;
-    background-color: red;
+    background-color: var(--acidgreen);
 
     transform: translateX(0%);
     transition: all 500ms;
@@ -78,15 +87,47 @@ body {
 
 .navitem {
     flex-grow: 1;
-    border: 5px solid black;
 
+    position: relative;
+}
 
+.navitem:visited {
+    color: white;
+}
+
+.navitem>div.selected {
+    background-color: black;
+    transition: all 0.3s;
+}
+
+.navitem>div.selected>img {
+    filter: invert(74%) sepia(75%) saturate(475%) hue-rotate(11deg) brightness(93%) contrast(88%);
+}
+
+.navitem>div {
+    position: absolute;
+
+    height: 100%;
+    width: 100%;
+}
+
+.navitem>div>img {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+
+    transform: translate(-50%, -50%);
+    transition: all 0.3s;
 }
 
 #assets, #market, #games {
     overflow: scroll;
-    background-color: goldenrod;
-    flex-grow: 1;
+    background-color: var(--rainforest);
+}
+
+#market {
+    overflow-x: hidden;
+    position: relative;
 }
 
 #nftcontainer {
@@ -100,41 +141,29 @@ body {
     position: relative;
 }
 
+.nftitem.selected {
+    filter: opacity(0.5);
+}
+
 .nftitem>img {
     width: 40vw;
     display: block;
 }
 
-.nftitem>.nftinfo {
-    position: absolute;
-    top: 0;
-    left: 0;
-    background-color: rgba(0, 0, 0, 0.514);
-    pointer-events: none;
-    filter: opacity(0);
-
-    transition: all 0.3s;
-
-    width: 40vw;
-    height: 40vw;
-
-    color: white;
-}
-
-.nftitem>.nftinfo.shown {
-    filter: opacity(1);
-}
-
-.nftitem>.nftinfo.shown>button {
-    pointer-events: all;
-}
-
-.nftitem button {
-    position: absolute;
+#nftinfo {
+    position: sticky;
     bottom: 0;
-    right: 0;
+    left: 0;
+    background-color: black;
+    color: var(--acidgreen);
 
-    pointer-events: none;
+    transform: translateY(100%);
+    transition: all 0.3s;
+    animation-timing-function: var(--snap-timing);
+}
+
+#nftinfo.shown {
+    transform: translateY(0%);
 }
 
 #games {
@@ -149,6 +178,7 @@ body {
 
     background-color: rgb(95, 35, 151);
     position: relative;
+    font-family: magnawave, sans-serif;
 }
 
 #clickerheader {
@@ -160,18 +190,18 @@ body {
 #clicker>#tenshibox {
     position: absolute;
     z-index: 2;
-    top: 0px;
-    left: 25vw;
+    top: 55px;
+    left: 15vw;
     transform: translate(-50%,  0%);
 
     animation: float 1s infinite;
-    filter: drop-shadow(0px 40px 10px black);
+    filter: drop-shadow(0px 40px 10px rgba(0, 0, 0, 0.6));
 }
 
 @keyframes float {
-    0% {transform: translate(-50%,  0%); filter: drop-shadow(0px 40px 10px black);}
-    50% {transform: translate(-50%,  -10%); filter: drop-shadow(0px 60px 13px black);}
-    100% {transform: translate(-50%,  0%); filter: drop-shadow(0px 40px 10px black);}
+    0% {transform: translate(-50%,  0%); filter: drop-shadow(0px 40px 10px rgba(0, 0, 0, 0.6));}
+    50% {transform: translate(-50%,  -10%); filter: drop-shadow(0px 60px 13px rgba(0, 0, 0, 0.6));}
+    100% {transform: translate(-50%,  0%); filter: drop-shadow(0px 40px 10px rgba(0, 0, 0, 0.6));}
 }
 
 #clicker>#tenshibox>#tenshi {
@@ -180,8 +210,8 @@ body {
     image-rendering: pixelated;
     image-rendering: crisp-edges;
 
-    height: 100px;
-    width: 100px;
+    height: 90px;
+    width: 90px;
 
     position: relative;
     z-index: 1;
@@ -192,12 +222,12 @@ body {
     position: absolute;
     z-index: 0;
 
-    height: 87px;
-    border-radius: 23px;
+    height: 48px;
+    border-radius: 10px;
 
     top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%);
+    transform: translate(-50%, -58%);
 }
 
 #clicker>#gamebox {
@@ -225,13 +255,13 @@ body {
 }
 
 #planet #multiplier.bounce {
-    animation: bounce 0.6s;
+    animation: bounce 0.6s cubic-bezier(0.6, -0.28, 0.74, 0.05);
 }
 
 @keyframes bounce {
-    0% {font-size: 25vw; filter: opacity(0.2);}
-    25% {font-size: 40vw; filter: opacity(0.5);}
-    100% {font-size: 25vw; filter: opacity(0.2);}
+    0% {font-size: 40vw; filter: opacity(0.2);}
+    25% {font-size: 70vw; filter: opacity(0.5);}
+    100% {font-size: 40vw; filter: opacity(0.2);}
 }
 
 #gamebox>#effects {
@@ -499,8 +529,26 @@ circle {
     100% {background-color: white;}
 }
 
-#planet.cracked {
-    animation: planetcracked 1s infinite;
+#clicker #planet.cracked {
+    animation: planetcracked 1.5s;
+    background-image: linear-gradient(to bottom right, white, rgb(255, 111, 135));
+}
+
+@keyframes planetcracked {
+    0% {pointer-events: none; background-image: linear-gradient(to bottom right, white, pink);}
+    66% {pointer-events: none; background-image: linear-gradient(to bottom right, white, rgb(246, 120, 141));}
+    100% {pointer-events: none;}
+}
+
+#clicker #planet.uncracked {
+    animation: planetuncracked 2s;
+    background-image: linear-gradient(to bottom right, white, pink);
+}
+
+@keyframes planetuncracked {
+    0% {pointer-events: none; background-image: linear-gradient(to bottom right, white, rgb(246, 120, 141));}
+    99% {pointer-events: none;background-image: linear-gradient(to bottom right, white, rgb(246, 120, 141));}
+    100% {pointer-events: none; background-image: linear-gradient(to bottom right, white, pink);}
 }
 
 
@@ -513,7 +561,7 @@ circle {
 
     height: 100%;
     width: 50%;
-    background-color: inherit;
+    background-image: linear-gradient(to right, white, #ffe0e5);
 
     border-top-left-radius: 364px;
     border-bottom-left-radius: 364px;
@@ -549,7 +597,7 @@ circle {
     border-radius: 0 200% 200% 0;
     height: 100%;
     width: 50%;
-    background-color: inherit;
+    background-image: linear-gradient(to right, #ffe0e5, pink);
 
     border-top-right-radius: 364px;
     border-bottom-right-radius: 364px;
@@ -646,9 +694,10 @@ svg#crackbox>polyline {
 }
 
 #vessel {
-    width: calc(50% - 15px);
+    width: calc(100vw - 10px);
     height: 75px;
 
+    box-sizing: border-box;
     border: 5px solid black;
     border-top: none; 
     border-radius: 0 0 25px 25px;
@@ -658,7 +707,7 @@ svg#crackbox>polyline {
     display: flex;
     align-items: flex-end;
     align-self: flex-end;
-    margin: 0 15px 0 0;
+    margin: 0 5px 0 5px;
     position: relative;
 
     overflow: hidden;
@@ -752,7 +801,7 @@ svg#crackbox>polyline {
     top: 0;
     left: 0;
 
-    background-color: rgb(95, 35, 151);
+    background-color: pink;
     border: 5px solid black;
     border-radius: 0 0 25px 0;
     
@@ -779,7 +828,7 @@ svg#crackbox>polyline {
 
 #clickerinventory.shown {
     transform: translateX(0%);
-    filter: drop-shadow(10px 10px 5px rgba(0, 0, 0, 0.733));
+    filter: drop-shadow(10px 0px 5px rgba(0, 0, 0, 0.733));
 }
 
 #clickerinventory>.clickerinvitem {
@@ -805,7 +854,7 @@ svg#crackbox>polyline {
     flex-direction: column;
     align-items: flex-end;
     gap: -20px;
-    font-size: 1rem;
+    font-size: 0.6rem;
     color: white;
 
     position: relative;
@@ -856,7 +905,7 @@ svg#crackbox>polyline {
     right: 0;
     z-index: 3;
 
-    background-color: rgb(95, 35, 151);
+    background-color: pink;
     border: 5px solid black;
     border-radius: 0 0 0 25px;
     
@@ -963,7 +1012,7 @@ svg#crackbox>polyline {
 
     background-color: rgb(95, 35, 151);
     width: 100vw;
-    height: 25vw;
+    height: 8vh;
 
     box-sizing: border-box;
     gap: 5px;
@@ -985,13 +1034,14 @@ svg#crackbox>polyline {
     display: flex;
     justify-content: center;
     align-items: center;
+    position: relative;
 
     border-radius: 0 15px 15px 0;
     border: 5px solid black;
     filter: drop-shadow(0px 7px 0px black);
     transition: all 0.3s;
     transition-timing-function: cubic-bezier(0.2, 1, 0.2, 1);
-    font-family: magnawave, sans-serif;
+    
 }
 
 #clickernav>.clickernavitem:first-child {
@@ -1001,4 +1051,12 @@ svg#crackbox>polyline {
 #clickernav>.clickernavitem.selected {
     filter: drop-shadow(0px 2px 0px black);
     transform: translateY(5px);
+}
+
+#clickernav>.clickernavitem>div {
+    font-family: magnawave, sans-serif;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 }

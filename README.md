@@ -110,17 +110,27 @@ Aug 1st, 2022
 
     Styling is going ok. Still not 100% sold on the direction, but I think listening to the Neon White ost will help. May have to scrap the fancy start button I love so much.
 
+Aug 2nd, 2022
+
+    Paid off my credit card today, and there's always more money on there than I thought. Oh well. I think I'm gonna be out of cigarettes today, and I'll see if I can quite nicotine after that. We'll see.
+
+    Added a tasteful sci-fi font today. May or may not use it for the entire site and not just the clicker game. Parts of the layout still aren't speaking to me. I think the tenshi art and the vessel are not in the best place. Also, the inventory and recipe panels still aren't lined up and centered somehow.
+
+    Clicker game is decently polished at this point. Gonna cut some corners on features that are unlikely to be seen, but it feels decent to play as is. And it being a react component, I can literally copy paste it into something like a portfolio, and have it run in a little window.
+
+    Got a color scheme and font for the rest of the app, and the general navbar looks like a real navbar now. Time for the fun part, cleaning up the store and assets pages and seeing how much functionality I really wanna have here. Can you sell items? Probably not, at least not now. This project has to end by the end of day tomorrow.
+
 
 
 ---To-Do---
 
--Avatar generator
+CANCEL-Avatar generator
 -market loading animation
--keep market loaded in once loaded once
--money system
--firebase connectivity
+I THINK THIS HAPPENS AUTOMATICALLY?-keep market loaded in once loaded once
+DONE-money system
+DONE-firebase connectivity
 -remove firestore test mode
--have app remember redirect/sign in
+done-have app remember redirect/sign in
 -ability to add your own apes back to market 
 -custom listing price for apes
 -fix ape list/unlist button 
@@ -133,9 +143,9 @@ Aug 1st, 2022
 -fix vessel filling animation
 -save inventory to firestore
 -fix app loading in with full screen buttons
--option for expanded UI in clicker
--dark mode
--add random extra drops from marker nodes
+CANCEL-option for expanded UI in clicker
+CANCEL-dark mode
+DONE-add random extra drops from marker nodes
 DONE-have consuming items remove one of that item
 DONE-add planet transition animation
 DONE-add new planet rules/ markers
@@ -146,8 +156,12 @@ DONE-reset test values
 DONE-fix three digit overflow for inventory
 DONE-have start button be whole planet
 DONE-planet hatching animation
--add coin chest sprite/ planet crack sprite
--add animation for chest transition
+DONE-add coin chest sprite/ planet crack sprite
+DONE-add animation for chest transition
 -add nuke sprite/animation
--fix tenshi art placeholder
--get shadow back on tenshi screen
+DONE-fix tenshi art placeholder
+DONE? CANCEL?-get shadow back on tenshi screen
+-randomly unlock recipes? or unlock them by crafting
+-add all recipes
+DONE-fix dioxidaltry
+-clicker inventory bug?

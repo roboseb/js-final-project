@@ -122,9 +122,6 @@ const crackPlanet = (color) => {
     const left = document.getElementById('planetleft');
     const right = document.getElementById('planetright');
 
-    left.style.backgroundColor = color;
-    right.style.backgroundColor = color;
-
     crackBox.classList.remove('shown');
     left.classList.remove('shown', 'shownreverse');
     right.classList.remove('shown', 'shownreverse');
@@ -136,15 +133,16 @@ const crackPlanet = (color) => {
     crackBox.classList.add('shown');
     left.classList.add('shown');
     right.classList.add('shown');
+
+    const planet = document.getElementById('planet');
+    planet.classList.remove('uncracked');
+    planet.classList.add('cracked');
 }
 
 const sealPlanet = (color) => {
     const left = document.getElementById('planetleft');
     const right = document.getElementById('planetright');
 
-    left.style.backgroundColor = color;
-    right.style.backgroundColor = color;
-;
     left.classList.remove('shown', 'shownreverse');
     right.classList.remove('shown', 'shownreverse');
 
@@ -153,6 +151,10 @@ const sealPlanet = (color) => {
 
     left.classList.add('shownreverse');
     right.classList.add('shownreverse');
+
+    const planet = document.getElementById('planet');
+    planet.classList.remove('cracked');
+    planet.classList.add('uncracked');
 }
 
 // Animate getting a small chest.

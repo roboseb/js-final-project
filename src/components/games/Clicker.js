@@ -21,7 +21,7 @@ import dioxidolatryImg from "../../art/dioxidolatry.png";
 import coinImg from "../../art/coin.png";
 import placeholder from "../../art/placeholder.png";
 
-import recipe1 from "../../art/recipe1.png";
+import recipesImg from "../../art/recipes.png";
 
 import smallChest1 from "../../art/smallchest1.png"
 import smallChest2 from "../../art/smallchest2.png"
@@ -29,137 +29,7 @@ import smallChest2 from "../../art/smallchest2.png"
 
 import { findAllByPlaceholderText } from '@testing-library/dom';
 
-function Planet(props) {
-
-    // This reference gives us direct access to the THREE.Mesh object
-    const ref = useRef()
-
-    const groundMap = useLoader(TextureLoader, "Ground037_1K_Color.jpg");
-    const waterMap = useLoader(TextureLoader, "photos_2018_7_16_fst_water-ripple.jpg")
-
-    // Hold state for hovered and clicked events
-    const [hovered, hover] = useState(false)
-    const [clicked, click] = useState(false)
-    const [rValue, setRValue] = useState(0.05)
-
-    const [scale, setScale] = useState(1.7);
-    const [scaleFactor, setScaleFactor] = useState(-0.1)
-
-    const [shaderMode, setShaderMode] = useState(false);
-
-    const [water, setWater] = useState(false);
-
-
-    //Animate the planet being clicked.
-    const animatePlanetClick = () => {
-        click(true);
-        setTimeout(() => {
-            click(false)
-        }, 150);
-    }
-
-    //Mine for a randomly chosen resource.
-    const mine = () => {
-
-        
-    }
-
-    // Subscribe this component to the render-loop, rotate the mesh every frame
-    useFrame((state, delta) => {
-        //ref.current.rotation.y += rValue;
-
-        //Animate the planet being clicked.
-        if (clicked) {
-            if (scale < 0.5) {
-                setScaleFactor(0.1);
-            }
-            setScale(scale + scaleFactor);
-        } else {
-            setScaleFactor(-0.1);
-            setScale(2.6);
-        }
-
-
-    });
-
-    // Return the view, these are regular Threejs elements expressed in JSX
-    return (
-        <mesh
-            {...props}
-            ref={ref}
-            scale={scale}
-            position={[0, -1.2, 0]}
-            onClick={(event) => {
-                click(!clicked);
-                animatePlanetClick();
-                mine();
-            }}
-            onPointerOver={(event) => {
-                hover(true);
-
-            }}
-            onPointerOut={(event) => hover(false)}>
-            <sphereGeometry args={[1, 8, 8, 0]} />
-            <meshStandardMaterial map={water ? waterMap : groundMap} />
-        </mesh>
-    )
-}
-
-function Moon(props) {
-    const colorMap = useLoader(TextureLoader, "Ground054_1K_Color.jpg")
-
-    // This reference gives us direct access to the THREE.Mesh object
-    const ref = useRef()
-    // Hold state for hovered and clicked events
-    const [hovered, hover] = useState(false)
-    const [clicked, click] = useState(false)
-    const [rValue, setRValue] = useState(0.05)
-
-    var orbitRadius = 2; // for example
-    const [date, setDate] = useState(0);
-
-    // Subscribe this component to the render-loop, rotate the mesh every frame
-    useFrame((state, delta) => {
-
-        //Rotate the moon.
-        ref.current.rotation.y += rValue;
-
-        //Orbit the moon around the planet.
-        setDate(Date.now() * 0.0008);
-        ref.current.position.set(
-            Math.cos(date) * orbitRadius,
-            0,
-            Math.sin(date) * orbitRadius
-          );
-    });
-
-    // Return the view, these are regular Threejs elements expressed in JSX
-    return (
-        <mesh
-            {...props}
-            ref={ref}
-            scale={0.5}
-            position={[0, 8, 0]}
-            onClick={(event) => {
-                click(!clicked); 
-            }}
-            onPointerOver={(event) => {
-                hover(true);
-
-            }}
-            onPointerOut={(event) => hover(false)}>
-            <sphereGeometry args={[1, 8, 8, 0]} />
-            {!props.autoMoon ? <meshStandardMaterial map={colorMap} />
-                : <meshStandardMaterial color='hotpink' />}
-
-            {!props.autoMoon ? null
-                : <ambientLight intensity={0.5} />}
-        </mesh>
-    )
-}
-
 const Marker = (props) => {
-    console.log('rendered!');
 
     return (
         <div 
@@ -189,7 +59,6 @@ const Marker = (props) => {
                     //Count clicked green markers currently visible.
                     const clickedGreens = Array.from(document.querySelectorAll('.greenclicked'));
                     if (clickedGreens.length >= 2) {
-                        console.log('got it!');
                         props.mine(e, props.color);
                         clearTimeout(props.timer);
                         props.addMarkers();
@@ -197,7 +66,6 @@ const Marker = (props) => {
                 }
             }}
         >
-            {/* <div>{props.number}</div> */}
             <ProgressRing
                 radius={props.height.split('p')[0]}
                 stroke={4}
@@ -207,45 +75,6 @@ const Marker = (props) => {
         </div>
     );
 }
-
-// const MiningAnimation = (props) => {
-
-//     // const [gif, setGif] = useState(rodGif);
-//     // const [loaded, setLoaded] = useState(rodGif);
-//     // const [gifLoaded, setGifLoaded] = useState(false);
-
-
-//     // const reloadGif = () => {
-//     //     if (gifLoaded === true) return;
-
-//     //     setGifLoaded(true);
-
-//     //     setLoaded('');
-//     //     setTimeout(() => {
-//     //         console.log('reloaded')
-//     //         setLoaded(gif)
-//     //     }, 50);
-//     // }
-
-//     const [loaded, setLoaded] = useState('rodGif');
-
-
-//     return (
-//         <img 
-//             onLoad={reloadGif}
-//             src={loaded} 
-//             id='mininganimation' 
-//             alt=""
-//             style={{
-//                 top: props.top,
-//                 left: props.left,
-//                 height: props.height
-//             }}
-//         ></img>
-//     );
-// }
-
-
 
 const Clicker = (props) => {
     const [markers, setMarkers] = useState([]);
@@ -266,6 +95,7 @@ const Clicker = (props) => {
 
     const [timer, setTimer] = useState(null);
     const [recentTimer, setRecentTimer] = useState(null);
+    const [gameRunning, setGameRunning] = useState(false);
 
     const [blueCount, setBlueCount] = useState(0);
     const [blackCount, setBlackCount] = useState(0);
@@ -290,6 +120,7 @@ const Clicker = (props) => {
         const startBtn = document.getElementById('startbtnbox');
         startBtn.classList.toggle('shown');
 
+        setGameRunning(true);
         addMarkers();
     }
 
@@ -335,11 +166,16 @@ const Clicker = (props) => {
     }
 
     //Handle a click that doesn't hit a marker.
-    const handleMiss = () => {
+    const handleMiss = (resetTrue) => {
+        setGameRunning(false);
 
         // Prevent miss if shield active.
-        if (dioxidolatryActive) {
+        if (dioxidolatryActive && !resetTrue) {
             setDioxidolatryActive(false);
+            setTimer(setTimeout(() => {
+                handleMiss(true);
+            }, timeRange));
+
             return;
         }
 
@@ -366,15 +202,15 @@ const Clicker = (props) => {
 
         //Reset all hot item counts to 0;
         setHotItems({
-            gnoxide: {amount: 5, img: gnoxideImg},
-            carbonant: {amount: 5, img: carbonantImg},
-            dioxidolatry: {amount: 5, img: dioxidolatryImg}
+            gnoxide: {amount: 0, img: gnoxideImg},
+            carbonant: {amount: 0, img: carbonantImg},
+            dioxidolatry: {amount: 0, img: dioxidolatryImg}
         });
     }
 
     //On orange marker click, give player all hot items and reset board.
     const handleSuccess = () => {
-        console.log('grats!');
+        setGameRunning(false);
 
         const startBtn = document.getElementById('startbtnbox');
         startBtn.classList.toggle('shown');
@@ -539,7 +375,6 @@ const Clicker = (props) => {
             let index = Math.floor(Math.random() * Object.keys(inventory).length);
             let choice = Object.keys(inventory)[index];
 
-            console.log(choice);
             animateSmallChest(inventory[choice]['img']);
 
             // Add the random item to the player's hot items.
@@ -671,8 +506,8 @@ const Clicker = (props) => {
 
         //If gnoxide and carbonant are over a threshold, nuke the
         //planet, give the player coins, and move to the next planet.
-        if (hotItems['gnoxide']['amount'] >= 5 && 
-            hotItems['carbonant']['amount'] >= 6) {
+        if (hotItems['gnoxide']['amount'] >= 100 && 
+            hotItems['carbonant']['amount'] >= 100) {
 
                 props.updateCoins(200);
                 animateSmallChest(coinImg);
@@ -684,18 +519,22 @@ const Clicker = (props) => {
 
         // If dioxidolatry is at least 100 and player is on the second
         // planet, destroy the planet and give the player a chest.
-        if (hotItems['dioxidolatry']['amount'] >= 100 &&
+        if (hotItems['gnoxide']['amount'] >= 100 && 
+            hotItems['carbonant']['amount'] >= 100 &&
+            hotItems['dioxidolatry']['amount'] >= 100 &&
             currentPlanet === 1) {
-            alert('planet destroyed! chest get!')
+            alert('planet destroyed! Coins get!');
+            animateSmallChest(coinImg);
+            props.updateCoins(100);
         }
     }, [hotItems.carbonant.amount, hotItems.gnoxide.amount, hotItems.dioxidolatry.amount]);
 
     //Use an item if available.
     const consumeItem = (item) => {
 
-        //Prevent using an item when the player has none.
-        if (inventory[item]['amount'] < 1) {
-            console.log("you've got none of this to use")
+        // Prevent using an item when the player has none.
+        // Also prevent using items while the game is running.
+        if (inventory[item]['amount'] < 1 || gameRunning) {
             return;
         }
 
@@ -740,8 +579,12 @@ const Clicker = (props) => {
         <div id='clicker'>
 
             <div id='tenshibox'>
-                {/* <img id='icon' src={props.icon ? props.icon : placeholder} alt=""></img> */}
-                <img id='icon' src={placeholder} alt=""></img>
+                <img 
+                    id='icon' 
+                    src={props.icon ? props.icon : placeholder} 
+                    alt=""
+                    style={props.icon ? null : {height: '80px'}}
+                ></img>
                 <img id='tenshi' src={tenshiGif} alt=""></img>
             </div>
 
@@ -854,7 +697,7 @@ const Clicker = (props) => {
                     })}
                 </div>
                 <div id='clickerrecipes'>
-                    <img src={recipe1} alt=""></img>
+                    <img src={recipesImg} alt=""></img>
                 </div>
                 <div id='recentitem'>
                     <img src={recentItem} alt=""></img>
@@ -863,8 +706,12 @@ const Clicker = (props) => {
 
                 <button id='navtogglebtn' onClick={toggleNavbar}><div>🔃</div></button>
                 <div id='clickernav'>
-                    <div onClick={showInventory} id='invbtn' className="clickernavitem">Inventory</div>
-                    <div onClick={showRecipes} id='recipebtn' className="clickernavitem">Recipes</div>
+                    <div onClick={showInventory} id='invbtn' className="clickernavitem">
+                        <div>Inventory</div>
+                    </div>
+                    <div onClick={showRecipes} id='recipebtn' className="clickernavitem">
+                        <div>Recipes</div>
+                    </div>
                 </div>
             </div>
         </div>

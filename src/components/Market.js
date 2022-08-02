@@ -50,25 +50,41 @@ const Market = (props) => {
 
     const [apes, setApes] = useState([]);
 
+    const [currentApe, setCurrentApe] = useState(null);
+
     //Fetch NFTs on component load.
     useEffect(() => {
         //fetchNfts();
     }, []);
 
-    const toggleInfo = (e, data) => {
-        //console.log(e.target, data);
+    // Update the details in the info box, and show or hide it.
+    const updateInfo = (e, info) => {
 
-        const box = e.target.parentElement;
-        const info = box.querySelector('.nftinfo');
+        // Show or hide the info box base on whether a new ape has
+        // been clicked.
+        if (info === currentApe) {
+            toggleInfo();
+        } else {
+            showInfo();
+        }
 
-        //console.log(info);
+        setCurrentApe(info);
+    }
 
+    // Toggle visibility on the info box.
+    const toggleInfo = () => {
+        const info = document.getElementById('nftinfo');
         info.classList.toggle('shown');
+    }
+
+    // Toggle visibility on the info box.
+    const showInfo = () => {
+        const info = document.getElementById('nftinfo');
+        info.classList.add('shown');
     }
 
     //Attempt to buy the targeted NFT.
     const buyNft = (e, info) => {
-        //console.log(info);
 
         //Remove coins from the user equal to the NFT price if they
         //can afford it. Then move the ape from the store to the user.
@@ -83,7 +99,7 @@ const Market = (props) => {
         }
     }
 
-
+    console.log('loaded')
 
     return (
         <div id='market'>
@@ -94,22 +110,35 @@ const Market = (props) => {
                         <img 
                             src={item['img']} 
                             alt=""
-                            onClick={e => toggleInfo(e, item)}
+                            onClick={e => {
+                                updateInfo(e, item)
+                                e.target.parentElement.classList.add('selected');
+                            }}
                         ></img>
-
-                        <div className='nftinfo'>
-                            <div>{item.sellerName !== undefined ? `seller: ${item.sellerName}` : null}</div>
-                            {item.attributes.map((item) => {
-                                return <div key={uniqid()}>{item['trait_type']}:{item['value']}</div>
-                            })}
-                            <div>{item.price} coins</div>
-                            <button onClick={e => buyNft(e, item)}>Buy</button>
-                            
-                          
-                        </div>
                     </div>
                 }) :  null}
             </div>
+
+            {currentApe === null ?  <div id='nftinfo'></div> :
+
+                <div id='nftinfo' onClick={toggleInfo}>
+                    <div>{currentApe.sellerName === undefined ? null : `seller: ${currentApe.sellerName}`}</div>
+
+                    <div>{currentApe.price} coins</div>
+
+                    {currentApe.attributes.map((item) => {
+                        return <div key={uniqid()}>
+                            {item['trait_type']}:{item['value']}
+                        </div>
+                    })}
+
+                    <button className='buybtn' onClick={e => buyNft(e, currentApe)}>Buy</button>
+
+                </div>
+
+
+            }
+
 
 
         </div>
