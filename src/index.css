@@ -4,6 +4,12 @@
     --black-grow: 0;
     --green-grow: 0;
     --time-range: 1000;
+    --fluid-height: 0%;
+}
+
+@font-face {
+    font-family: magnawave;
+    src: url("./fonts/magnawave.otf");
 }
 
 body {
@@ -18,10 +24,13 @@ body {
     display: grid;
     grid-template-columns: 100vw;
     grid-template-rows: 10vh 1fr 25vw;
+    font-family: magnawave, sans-serif;
 }
 
 #header {
-    background-color: teal;
+    background-color: black;
+    color: white;
+
     width: 100vw;
     flex-grow: 1;
     position: relative;
@@ -138,27 +147,31 @@ body {
     flex-direction: column;
     flex-grow: 1;
 
+    background-color: rgb(95, 35, 151);
     position: relative;
 }
 
 #clickerheader {
     display: flex;
     gap: 20px;
+    height: 10vh;
 }
 
 #clicker>#tenshibox {
     position: absolute;
     z-index: 2;
-    top: 0;
-    left: 25px;
+    top: 0px;
+    left: 25vw;
+    transform: translate(-50%,  0%);
 
     animation: float 1s infinite;
+    filter: drop-shadow(0px 40px 10px black);
 }
 
 @keyframes float {
-    0% {transform: translate(0%,  0%)}
-    50% {transform: translate(0%,  -10%)}
-    100% {transform: translate(0%,  0%)}
+    0% {transform: translate(-50%,  0%); filter: drop-shadow(0px 40px 10px black);}
+    50% {transform: translate(-50%,  -10%); filter: drop-shadow(0px 60px 13px black);}
+    100% {transform: translate(-50%,  0%); filter: drop-shadow(0px 40px 10px black);}
 }
 
 #clicker>#tenshibox>#tenshi {
@@ -167,11 +180,12 @@ body {
     image-rendering: pixelated;
     image-rendering: crisp-edges;
 
-    height: 160px;
-    width: 160px;
+    height: 100px;
+    width: 100px;
 
     position: relative;
     z-index: 1;
+    animation: tenshishadow 1s infinite;
 }
 
 #clicker>#tenshibox>#icon {
@@ -191,10 +205,11 @@ body {
     flex-direction: column;
     flex-grow: 1;
 
-    background-color: green;
-
     justify-content: center;
     align-items: center;
+    position: relative;
+
+    overflow: hidden;
 }
 
 #planet #multiplier {
@@ -238,9 +253,9 @@ body {
 
 #gamebox>#chestbox {
     position: absolute;
-    bottom: 40px;
-    left: 40px;
-    z-index: 2;
+    bottom: 25px;
+    right: 25px;
+    z-index: 4;
 
     height: 50px;
     width: 50px;
@@ -249,6 +264,7 @@ body {
 
     background-image: url("../src/art/smallchest1.png");
     animation: smallchest 1.2s linear, smallchestbounce 1.2s cubic-bezier(1,-0.32, 1, 0.14);
+    animation-direction: reverse;
 
     image-rendering: -moz-crisp-edges;
     image-rendering: -webkit-crisp-edges;
@@ -270,15 +286,16 @@ body {
 }
 
 @keyframes smallchestbounce {
-    0% {transform: scale(2); filter: opacity(1);}
-    35% {transform: scale(3); filter: opacity(1);}
-    75% {transform: scale(2); filter: opacity(1);}
-    100% {transform: scale(2); filter: opacity(1);}
+    0% {transform: scale(1.5); filter: opacity(1);}
+    35% {transform: scale(2); filter: opacity(1);}
+    75% {transform: scale(1.5); filter: opacity(1);}
+    100% {transform: scale(1.5); filter: opacity(1);}
 }
 
 #gamebox>#chestbox>#smallchestimg {
     filter: drop-shadow(5px 5px 5px black);
     animation: smallchestitem 1.2s cubic-bezier(1,-0.32, 1, 0.14);
+    animation-direction: reverse;
 }
 
 @keyframes smallchestitem {
@@ -293,8 +310,11 @@ body {
     width: 90vw;
     border-radius: 100%;
 
-    background-color: #fff;
+    background-color: white;
+    background-image: linear-gradient(to bottom right, white, pink);
     position: relative;
+
+    border: 5px solid black;
 }
 
 #clicker .marker {
@@ -413,6 +433,7 @@ circle {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
+    font-family: magnawave, sans-serif;
 
     height: 90vw;
     width: 90vw;
@@ -625,25 +646,39 @@ svg#crackbox>polyline {
 }
 
 #vessel {
-    position: absolute;
-    top: 0;
-    right: 0;
-    z-index: 1;
-
-    width: 50%;
+    width: calc(50% - 15px);
     height: 75px;
 
     border: 5px solid black;
-    background-color: white;
+    border-top: none; 
+    border-radius: 0 0 25px 25px;
+    background-color: rgba(77, 172, 175, 0.233);
+    filter: drop-shadow(10px 0px 10px black);
 
     display: flex;
+    align-items: flex-end;
+    align-self: flex-end;
+    margin: 0 15px 0 0;
+    position: relative;
 
+    overflow: hidden;
+}
+
+#vessel>#vesselglass {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+
+    background-image: linear-gradient(to bottom,rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.048), rgba(255, 255, 255, 0.178), rgba(255, 255, 255, 0.048));
 }
 
 #vessel>#vesselblue {
     background-color: blue;
     flex-grow: var(--blue-grow);
     position: relative;
+    height: min(var(--fluid-height), 100%);
 
     transition: all 0.5s;
     overflow: hidden;
@@ -653,6 +688,7 @@ svg#crackbox>polyline {
     background-color: black;
     flex-grow: var(--black-grow);
     position: relative;
+    height: min(var(--fluid-height), 100%);
 
     transition: all 0.5s;
     overflow: hidden;
@@ -662,6 +698,7 @@ svg#crackbox>polyline {
     background-color: darkolivegreen;
     flex-grow: var(--green-grow);
     position: relative;
+    height: min(var(--fluid-height), 100%);
 
     transition: all 0.5s;
     overflow: hidden;
@@ -677,24 +714,18 @@ svg#crackbox>polyline {
     transform: translate(-50%, -50%);
 }
 
-#vessel>#hotitems {
+#hotitems {
+    position: absolute;
+    top: 5px;
+    right: 20px;
+
+
     display: flex;
     gap: 5px;
-
-    position: absolute;
-    bottom: 0;
-    left: 0;
-
-    transform: translateY(125%);
-}
-
-#hotitems>.hotitem {
-   
 }
 
 #hotitems>.hotitem img {
     height: 27px;
-    filter: grayscale(50%) opacity(50%);
 }
 
 #hotitems>.hotitem>div {
@@ -705,6 +736,7 @@ svg#crackbox>polyline {
 #hotitems>.hotitem .hotitemcount {
     font-size: 1rem;
     font-weight: bolder;
+    color: white;
 }
 
 #vessel>#percentages {
@@ -719,21 +751,23 @@ svg#crackbox>polyline {
     position: absolute;
     top: 0;
     left: 0;
-    z-index: 3;
+
+    background-color: rgb(95, 35, 151);
+    border: 5px solid black;
+    border-radius: 0 0 25px 0;
+    
 
     box-sizing: border-box;
-    background-color: white;
-    border: 5px solid black;
-
     transform: translateX(-100%);
     height: 100%;
-    width: 50vw;
+    width: 50%;
     transition: all 0.4s;
     transition-timing-function: cubic-bezier(0.2, 1, 0.2, 1);
 
     display: flex;
     flex-direction: column;
     gap: 10px;
+    padding-top: 10px;
 }
 
 #clickerinventory>img {
@@ -745,6 +779,7 @@ svg#crackbox>polyline {
 
 #clickerinventory.shown {
     transform: translateX(0%);
+    filter: drop-shadow(10px 10px 5px rgba(0, 0, 0, 0.733));
 }
 
 #clickerinventory>.clickerinvitem {
@@ -752,10 +787,15 @@ svg#crackbox>polyline {
     justify-content: flex-end;
     align-items: center;
     gap: 10px;
+    z-index: 0;
 
     padding: 10px;
+    margin: 0 10px;
+    border: 5px solid black;
+    border-radius: 10px 0 10px 0;
+    box-shadow: inset 5px 5px 0px rgb(48, 0, 93);
 
-    background-color: wheat;
+    background-color: rgb(124, 77, 168);
 
     position: relative;
 }
@@ -766,6 +806,7 @@ svg#crackbox>polyline {
     align-items: flex-end;
     gap: -20px;
     font-size: 1rem;
+    color: white;
 
     position: relative;
 }
@@ -777,20 +818,20 @@ svg#crackbox>polyline {
 
 .usebtn {
     position: absolute;
-    top: 0;
-    right: 0;
+    top: -5px;
+    right: -5px;
     z-index: -1;
 
-    box-sizing: border-box;
-    border-radius: 0 10px 10px 0;
+    border-radius: 0 0 10px 0;
     height: 100%;
-    background-color: aquamarine;
+    background-color: rgb(124, 77, 168);
+    color: transparent;
     transform: translateX(0%);
     border: 5px solid black;
     border-left: none;
-    padding-left: 10px;
+    padding-left: 30px;
     padding-right: 5px;
-    filter: opacity(0.5);
+    box-shadow: inset 0px 5px 0px rgb(48, 0, 93);
 
     display: flex;
     flex-direction: column;
@@ -805,7 +846,43 @@ svg#crackbox>polyline {
 }
 
 .usebtn.shown {
+    color: white;
+    transform: translateX(83%);
+}
+
+#clickerrecipes {
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: 3;
+
+    background-color: rgb(95, 35, 151);
+    border: 5px solid black;
+    border-radius: 0 0 0 25px;
+    
+
+    box-sizing: border-box;
     transform: translateX(100%);
+    height: 100%;
+    width: 50%;
+    transition: all 0.4s;
+    transition-timing-function: cubic-bezier(0.2, 1, 0.2, 1);
+
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding-top: 10px;
+}
+
+#clickerrecipes>img {
+    image-rendering: -moz-crisp-edges;
+    image-rendering: -webkit-crisp-edges;
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
+}
+
+#clickerrecipes.shown {
+    transform: translateX(0%);
 }
 
 #recentitem {
@@ -852,8 +929,30 @@ svg#crackbox>polyline {
 
 #navtogglebtn {
     position: absolute;
-    bottom: 0;
-    right: 0;
+    bottom: 15px;
+    right: 15px;
+
+    height: 55px;
+    width: 55px;
+
+    border: 5px solid black;
+    border-radius: 100%;
+    transition: all 0.3s;
+    filter: drop-shadow(0 6px 0 black);
+}
+
+#navtogglebtn>div {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+    font-size: 2rem;
+}
+
+#navtogglebtn.flipped {
+    transform: scaleX(-100%) translateY(4px);
+    filter: drop-shadow(0 2px 0 black);
 }
 
 #clickernav {
@@ -862,13 +961,13 @@ svg#crackbox>polyline {
     left: 0;
     display: flex;
 
-    background-color: thistle;
+    background-color: rgb(95, 35, 151);
     width: 100vw;
     height: 25vw;
 
     box-sizing: border-box;
     gap: 5px;
-    padding: 5px;
+    padding: 5px 5px 12px 5px;
 
     transition: all 500ms;
     transition-timing-function: cubic-bezier(0.1, 1, 0.1, 1);
@@ -881,9 +980,25 @@ svg#crackbox>polyline {
 
 #clickernav>.clickernavitem {
     flex-grow: 1;
-    background-color: black;
+    background: rgb(201,201,39);
+    background: linear-gradient(150deg, rgba(201,201,39,1) 0%, rgba(255,253,227,1) 70%, rgba(222,221,51,1) 100%);
     display: flex;
     justify-content: center;
     align-items: center;
-    color: white;
+
+    border-radius: 0 15px 15px 0;
+    border: 5px solid black;
+    filter: drop-shadow(0px 7px 0px black);
+    transition: all 0.3s;
+    transition-timing-function: cubic-bezier(0.2, 1, 0.2, 1);
+    font-family: magnawave, sans-serif;
+}
+
+#clickernav>.clickernavitem:first-child {
+    border-radius: 15px 0 0 15px;
+}   
+
+#clickernav>.clickernavitem.selected {
+    filter: drop-shadow(0px 2px 0px black);
+    transform: translateY(5px);
 }

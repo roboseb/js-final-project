@@ -100,6 +100,16 @@ July 29th, 2022
 
     Fuck me dude. I though the planet cracking animations were cool, but this chest is dope as fuck. I found out by accident that chrome devtools has an animations timing function UI so that I can see real time changes using a graph instead of numbers. Dope as fuck. Most of the game mechanics are there, they should be done by tomorrow. Should also be able to clean up the game UI before the tomorrow's work day is over. Might keep working on this sunday so that I can be done with it. Might still be being optimistic.
 
+Aug 1st, 2022
+
+    God fucking dammit. It's always something getting in the way of this project. There are only two real ISPs in my area, and my landlord uses some weird chinese-targeted third option. Thanks to that, today markes the third day with no internet in the house. Believe it or not, this makes developing websites more difficult.
+
+    I think I can at least polish up the styling and some minor non-DB or auth features while I wait, but not internet in web dev really sucks ass. 
+
+    Holy fuck, internet came back halfway through the day. Already got some solid styling done, but this at least means that the project will be able to be finished eventually. Thank Christ.
+
+    Styling is going ok. Still not 100% sold on the direction, but I think listening to the Neon White ost will help. May have to scrap the fancy start button I love so much.
+
 
 
 ---To-Do---
@@ -136,3 +146,8 @@ DONE-reset test values
 DONE-fix three digit overflow for inventory
 DONE-have start button be whole planet
 DONE-planet hatching animation
+-add coin chest sprite/ planet crack sprite
+-add animation for chest transition
+-add nuke sprite/animation
+-fix tenshi art placeholder
+-get shadow back on tenshi screen

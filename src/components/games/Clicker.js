@@ -6,7 +6,8 @@ import { BoxBufferGeometry } from "three";
 
 import {animateMining, animateBeam, animateMiss, animateSuccess, 
         animateTimerExpired, toggleUseButton, toggleNavbar,
-        showInventory, crackPlanet, sealPlanet, animateSmallChest} from "../animations";
+        showInventory, crackPlanet, sealPlanet, animateSmallChest,
+        showRecipes} from "../animations";
 
 import ProgressRing from '../ProgressRing';
 
@@ -17,6 +18,10 @@ import rodGif from "../../art/rod_ani.gif";
 import gnoxideImg from "../../art/gnoxide.png";
 import carbonantImg from "../../art/carbonant.png";
 import dioxidolatryImg from "../../art/dioxidolatry.png";
+import coinImg from "../../art/coin.png";
+import placeholder from "../../art/placeholder.png";
+
+import recipe1 from "../../art/recipe1.png";
 
 import smallChest1 from "../../art/smallchest1.png"
 import smallChest2 from "../../art/smallchest2.png"
@@ -517,13 +522,30 @@ const Clicker = (props) => {
         animateMining(e);
         addToVessel(color);
 
+        //Don't roll for a chest if node is orange.
+
+        if (color === 'orange') return;
+
         // Roll to instantly get coins
-        if (roll(100)) {
+        if (roll(10)) {
             let amount = Math.round(Math.random() * 20);
             props.updateCoins(amount)
+            animateSmallChest(coinImg);
 
-            console.log('amount' + amount);
-            animateSmallChest();
+        //If not coins, roll to give the player an item.
+        } else if (roll(10)) {
+
+            // Choose a random possible inventory item.
+            let index = Math.floor(Math.random() * Object.keys(inventory).length);
+            let choice = Object.keys(inventory)[index];
+
+            console.log(choice);
+            animateSmallChest(inventory[choice]['img']);
+
+            // Add the random item to the player's hot items.
+            let tempInv = hotItems;
+            tempInv[choice]['amount'] += 1;
+            setHotItems(tempInv);
         }
     }
 
@@ -565,6 +587,10 @@ const Clicker = (props) => {
 
         let total = tempBlackCount + tempBlueCount + tempGreenCount;
 
+        //Update fluid level displayed in vessel;
+        const root = document.documentElement;
+        root.style.setProperty('--fluid-height', `${(total * 5) + 30}%`);
+
         //Update color count states.
         setBlueCount(tempBlueCount);
         setBlackCount(tempBlackCount);
@@ -577,7 +603,6 @@ const Clicker = (props) => {
         setGreenPercent(Math.round(tempGreenCount/total * 100));
 
         //Update displayed vessel colors;
-        const root = document.documentElement;
         root.style.setProperty('--blue-grow', tempBlueCount);
         root.style.setProperty('--black-grow', tempBlackCount);
         root.style.setProperty('--green-grow', tempGreenCount);
@@ -650,6 +675,7 @@ const Clicker = (props) => {
             hotItems['carbonant']['amount'] >= 6) {
 
                 props.updateCoins(200);
+                animateSmallChest(coinImg);
                 handleSuccess();
                 setCurrentPlanet(1);
 
@@ -712,32 +738,44 @@ const Clicker = (props) => {
 
     return (
         <div id='clicker'>
-            <div id='clickerheader'>
-                <h1>Clicker</h1>
-            </div>
 
             <div id='tenshibox'>
-                <img id='icon' src={props.icon} alt=""></img>
+                {/* <img id='icon' src={props.icon ? props.icon : placeholder} alt=""></img> */}
+                <img id='icon' src={placeholder} alt=""></img>
                 <img id='tenshi' src={tenshiGif} alt=""></img>
             </div>
-            
-            {/* <Canvas style={{backgroundColor: 'white'}}>
-                <ambientLight intensity={0.5} />
-                <spotLight position={[10, 10, 10]} angle={0.15} penumbra={1} />
-                <pointLight position={[-10, -10, -10]} />
-                <Planet 
-                    coinMultiplier={coinMultiplier}
-                    setCoinMultiplier={setCoinMultiplier}
-                    updateCoins={props.updateCoins}
-                    autoMoon={autoMoon}
-                    setAutoMoon={setAutoMoon}
-                />
-                <Moon 
-                    autoMoon={autoMoon}
-                />
-            </Canvas> */}
+
+            <div id='vessel'>
+                <div id='vesselblue'>
+                    <div>{blueCount}</div>
+                </div>
+                <div id='vesselblack'>
+                    <div>{blackCount}</div>
+                </div>
+                <div id='vesselgreen'>
+                    <div>{greenCount}</div>
+                </div>
+                <div id='vesselglass'>
+
+                </div>
+
+            </div>
 
             <div id='gamebox'>
+                <div id='hotitems'>
+                    {Object.keys(hotItems).map((key, index) => {
+                        return <div className='hotitem'>
+                            {/* <div>{key}</div> */}
+                            {hotItems[key].amount > 0 ?
+                                <div>
+                                    <img src={hotItems[key].img} alt=""></img>
+                                    <div className='hotitemcount'>{hotItems[key].amount}</div>
+                                </div>
+                                : null
+                            }
+                        </div>
+                    })}
+                </div>
                 <div id='effects'>
                     {gnoxideActive ? <img src={gnoxideImg} alt=""></img> : null}
                     {carbonantActive ? <img src={carbonantImg} alt=""></img> : null}
@@ -745,37 +783,10 @@ const Clicker = (props) => {
                 </div>
 
                 <div id='chestbox'>
-                    <img id='smallchestimg' src={gnoxideImg} alt=""></img>
+                    <img id='smallchestimg' src="" alt=""></img>
                 </div>
 
-                <div id='vessel'>
-                    <div id='vesselblue'>
-                        <div>{blueCount}</div>
-                    </div>
-                    <div id='vesselblack'>
-                        <div>{blackCount}</div>
-                    </div>
-                    <div id='vesselgreen'>
-                        <div>{greenCount}</div>
-                    </div>
-                    <div id='percentages'>
-                        
-                    </div>
-                    <div id='hotitems'>
-                        {Object.keys(hotItems).map((key, index) => {
-                            return <div className='hotitem'>
-                                {/* <div>{key}</div> */}
-                                {hotItems[key].amount > 0 ?
-                                    <div>
-                                        <img src={hotItems[key].img} alt=""></img>
-                                        <div className='hotitemcount'>{hotItems[key].amount}</div>
-                                    </div>
-                                    : null
-                                }
-                            </div>
-                        })}
-                    </div>
-                </div>
+
 
                 <div id='planet'
                     style={currentPlanet === 1 ? {backgroundColor: '#f4b8c4'} : null}
@@ -784,7 +795,6 @@ const Clicker = (props) => {
                         
                         if (e.target.id === 'planet') {
                             handleMiss();
-                            console.log('planet clicked');
                         }
                         
                     }}>
@@ -817,9 +827,9 @@ const Clicker = (props) => {
                     <div id='startbtnbox' className='shown'>
                 
                         <button onClick={startGame} id='startbtn'>start</button>
-                        <svg>
+                        {/* <svg>
                             <polyline points="0,0 150,0 150,75 0,75 0,0"/>
-                        </svg>
+                        </svg> */}
                     </div>
                     
                 </div>
@@ -843,15 +853,18 @@ const Clicker = (props) => {
                         </div>
                     })}
                 </div>
+                <div id='clickerrecipes'>
+                    <img src={recipe1} alt=""></img>
+                </div>
                 <div id='recentitem'>
                     <img src={recentItem} alt=""></img>
                 </div>
 
 
-                <button id='navtogglebtn' onClick={toggleNavbar}>🔃</button>
+                <button id='navtogglebtn' onClick={toggleNavbar}><div>🔃</div></button>
                 <div id='clickernav'>
-                    <div onClick={showInventory} className="clickernavitem">Inventory</div>
-                    <div className="clickernavitem">Recipes</div>
+                    <div onClick={showInventory} id='invbtn' className="clickernavitem">Inventory</div>
+                    <div onClick={showRecipes} id='recipebtn' className="clickernavitem">Recipes</div>
                 </div>
             </div>
         </div>

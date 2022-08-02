@@ -91,14 +91,29 @@ const toggleUseButton = (e) => {
 const toggleNavbar = () => {
     const navbar = document.getElementById('navbar');
     const clickerNav = document.getElementById('clickernav');
+    const toggleButton = document.getElementById('navtogglebtn');
 
     navbar.classList.toggle('hidden');
     clickerNav.classList.toggle('shown');
+    toggleButton.classList.toggle('flipped');
 }
 
+// Toggle the inventory.
 const showInventory = () => {
     const inventory = document.getElementById('clickerinventory');
     inventory.classList.toggle('shown');
+
+    const button = document.getElementById('invbtn');
+    button.classList.toggle('selected');
+}
+
+// Toggle recipe visibility.
+const showRecipes = () => {
+    const recipes = document.getElementById('clickerrecipes');
+    recipes.classList.toggle('shown');
+
+    const button = document.getElementById('recipebtn');
+    button.classList.toggle('selected');
 }
 
 // Animate the planet cracking in two.
@@ -142,20 +157,20 @@ const sealPlanet = (color) => {
 
 // Animate getting a small chest.
 const animateSmallChest = (image) => {
+
+    // Animate the chest.
     const chest = document.getElementById('chestbox');
     chest.classList.remove('shown');
     void chest.offsetWidth;
     chest.classList.add('shown');
 
-    animateSmallChestItem(image);
+    // Update the chest item source.
+    const itemImg = chest.querySelector('img');
+    itemImg.src = image;
 }
-
-const animateSmallChestItem = (image) => {
-    
-}   
 
 
 
 export {animateMining, animateBeam, animateMiss, animateSuccess, 
         animateTimerExpired, toggleUseButton, toggleNavbar, showInventory,
-        crackPlanet, sealPlanet, animateSmallChest}
+        crackPlanet, sealPlanet, animateSmallChest, showRecipes}
