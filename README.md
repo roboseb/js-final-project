@@ -120,6 +120,13 @@ Aug 2nd, 2022
 
     Got a color scheme and font for the rest of the app, and the general navbar looks like a real navbar now. Time for the fun part, cleaning up the store and assets pages and seeing how much functionality I really wanna have here. Can you sell items? Probably not, at least not now. This project has to end by the end of day tomorrow.
 
+Aug 3rd, 2022
+
+    My phone has been charging at a rate of about 1% per hour, which is a fucking nightmare. Not that I need my phone for most things, but it's infuriating just to have technology not do what it's supposed to. 
+
+    Finished my "last" cigarette yesterday. We'll see how today goes, but so far so good. I felt real shit when I switched from vaping to smoking, and I don't feel bad in the same way right now. Gotta keep working on this project, cause at this point I think I'm gonna wrap it up today. Fix the most necessary and fixible issues, add any reasonably simple features to add, and then move on. Daddy's running out of money and needs a job.
+
+
 
 
 ---To-Do---
@@ -165,3 +172,4 @@ DONE? CANCEL?-get shadow back on tenshi screen
 -add all recipes
 DONE-fix dioxidaltry
 -clicker inventory bug?
+-Basic desktop layout

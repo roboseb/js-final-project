@@ -51,6 +51,7 @@ const Market = (props) => {
     const [apes, setApes] = useState([]);
 
     const [currentApe, setCurrentApe] = useState(null);
+    const [currentIndex, setCurrentIndex] = useState(null);
 
     //Fetch NFTs on component load.
     useEffect(() => {
@@ -58,7 +59,7 @@ const Market = (props) => {
     }, []);
 
     // Update the details in the info box, and show or hide it.
-    const updateInfo = (e, info) => {
+    const updateInfo = (e, info, index) => {
 
         // Show or hide the info box base on whether a new ape has
         // been clicked.
@@ -111,8 +112,10 @@ const Market = (props) => {
                             src={item['img']} 
                             alt=""
                             onClick={e => {
-                                updateInfo(e, item)
+                                updateInfo(e, item, index);
                                 e.target.parentElement.classList.add('selected');
+                                e.target.style.border = '5px solid black';
+                                
                             }}
                         ></img>
                     </div>
@@ -120,7 +123,8 @@ const Market = (props) => {
             </div>
 
             {currentApe === null ?  <div id='nftinfo'></div> :
-
+                
+                
                 <div id='nftinfo' onClick={toggleInfo}>
                     <div>{currentApe.sellerName === undefined ? null : `seller: ${currentApe.sellerName}`}</div>
 
