@@ -1,5 +1,7 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import uniqid from "uniqid";
+
+import NftContainer from "./NftContainer";
 
 const Market = (props) => {
     const fetchNfts = () => {
@@ -51,7 +53,6 @@ const Market = (props) => {
     const [apes, setApes] = useState([]);
 
     const [currentApe, setCurrentApe] = useState(null);
-    const [currentIndex, setCurrentIndex] = useState(null);
 
     //Fetch NFTs on component load.
     useEffect(() => {
@@ -59,33 +60,48 @@ const Market = (props) => {
     }, []);
 
     // Update the details in the info box, and show or hide it.
-    const updateInfo = (e, info, index) => {
+    const updateInfo = useCallback((e, info, index) => {
+        //Bring the clicked NFT into view.
+        scrollToElement(e);
 
-        // Show or hide the info box base on whether a new ape has
-        // been clicked.
-        if (info === currentApe) {
-            toggleInfo();
-        } else {
-            showInfo();
-        }
-
+        //Update the shown NFT details, and toggle the info box.
+        toggleInfo(e);
         setCurrentApe(info);
+    }, []);
+
+    //Scroll the market page to bring the selected NFT into focus.
+    const scrollToElement = (e) => {
+        const element = e.target.parentElement;
+        const market = document.getElementById('market');
+
+        market.scrollTo({top: element.offsetTop - 20, behavior: 'smooth'});
     }
 
     // Toggle visibility on the info box.
-    const toggleInfo = () => {
-        const info = document.getElementById('nftinfo');
-        info.classList.toggle('shown');
+    const toggleInfo = (e) => {
+
+        // Prevent toggling info box on button or input click.
+        if (e.target.classList.contains('buybtn')) return;
+
+        const infoBox = document.getElementById('nftinfo');
+
+        if (e.target.parentElement.classList.contains('selected')) {
+            infoBox.classList.add('shown');
+        } else {
+            infoBox.classList.remove('shown');
+        }
+        
     }
 
-    // Toggle visibility on the info box.
-    const showInfo = () => {
-        const info = document.getElementById('nftinfo');
-        info.classList.add('shown');
-    }
 
     //Attempt to buy the targeted NFT.
     const buyNft = (e, info) => {
+        // Prevent a user from purchasing their own ape.
+        if (props.userInfo.uid === info.seller) {
+            props.playMessage("That's your ape!");
+            return;
+        }
+
 
         //Remove coins from the user equal to the NFT price if they
         //can afford it. Then move the ape from the store to the user.
@@ -95,53 +111,44 @@ const Market = (props) => {
             props.updateCoins(info.cost * -1);
             props.addApeToAccount(info);
             props.removeApeFromStore(info);
+
+            props.playMessage('Ape purchased!');
         } else {
-            console.log("can't afford!");
+            props.playMessage("Can't afford!")
         }
     }
 
-    console.log('loaded')
 
     return (
         <div id='market'>
+            <NftContainer
+                updateInfo={updateInfo}
+                apes={props.apes}
+            />
 
-            <div id='nftcontainer'>
-                {props.apes !== [] ? props.apes.map((item, index) => {
-                    return <div className='nftitem'  key={uniqid()}>
-                        <img 
-                            src={item['img']} 
-                            alt=""
-                            onClick={e => {
-                                updateInfo(e, item, index);
-                                e.target.parentElement.classList.add('selected');
-                                e.target.style.border = '5px solid black';
-                                
-                            }}
-                        ></img>
-                    </div>
-                }) :  null}
-            </div>
+            
 
             {currentApe === null ?  <div id='nftinfo'></div> :
-                
-                
                 <div id='nftinfo' onClick={toggleInfo}>
-                    <div>{currentApe.sellerName === undefined ? null : `seller: ${currentApe.sellerName}`}</div>
 
-                    <div>{currentApe.price} coins</div>
+                    <div className='nftattributes'>
+                        {currentApe.attributes.map((item) => {
+                            return <div key={uniqid()}>
+                                {item['trait_type']}:{item['value']}
+                            </div>
+                        })}
+                    </div>
 
-                    {currentApe.attributes.map((item) => {
-                        return <div key={uniqid()}>
-                            {item['trait_type']}:{item['value']}
-                        </div>
-                    })}
+                    <div className='purchaseinfo'>
+                        <div>{currentApe.sellerName === undefined ? 'seller: market' : `seller: ${currentApe.sellerName}`}</div>
 
-                    <button className='buybtn' onClick={e => buyNft(e, currentApe)}>Buy</button>
+                        <div>{currentApe.cost} coins</div>
+                        <button className='buybtn' onClick={e => buyNft(e, currentApe)}>Buy</button>
+                    </div>
 
                 </div>
-
-
             }
+
 
 
 

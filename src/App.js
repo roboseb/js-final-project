@@ -11,7 +11,7 @@ import Games from "./components/Games";
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
 import { getFirestore, collection, getDoc, getDocs, addDoc, deleteDoc, setDoc, updateDoc, doc } from 'firebase/firestore';
-import { GoogleAuthProvider, getAuth, signInWithRedirect, getRedirectResult, onAuthStateChanged} from "firebase/auth";
+import { GoogleAuthProvider, getAuth, signOut, signInWithRedirect, getRedirectResult, onAuthStateChanged} from "firebase/auth";
 import { getDatabase, ref, set, get, child } from "firebase/database";
 
 
@@ -41,6 +41,8 @@ function App() {
     const [apes, setApes] = useState([]);
     const [userApes, setUserApes] = useState([]);
 
+    const [message, setMessage] = useState('Hi, this is a test dfsd f');
+
     //Load user info once the data has been updated.
     onAuthStateChanged(auth, (user) => {
         //console.log(userInfo);
@@ -50,7 +52,7 @@ function App() {
 
             const userData = getAuth().currentUser; 
 
-            console.log(userData);
+            console.log('auth state changed, userinfo: ' + userInfo);
 
             //Update session's user info and load their data.
             setUserInfo(userData);
@@ -99,12 +101,8 @@ function App() {
         const docSnap = await getDoc(docRef);
 
         if (docSnap.exists()) {
-            //console.log("Document data:", docSnap.data());
             setCoins(docSnap.data().coins);
             setUserApes(docSnap.data().apes);
-
-            console.log("user's apes:" + docSnap.data().apes);
-
         } else {
 
             console.log("No such document!");
@@ -119,14 +117,21 @@ function App() {
         signInWithRedirect(auth, provider);
     }
 
-    const getInfo = () => {
-        //console.log(userInfo);
+    // Sign out the user.
+    async function signUserOut() {
+        
 
         const auth = getAuth();
+        console.log('auth:');
+        console.log(auth);
 
-        setUserInfo(auth.currentUser);
+        signOut(auth).then(() => {
+            setUserInfo(null);
+            playMessage('Sign out successful!');
+        }).catch((error) => {
 
-        //console.log(auth);
+            console.log(error);
+        });
     }
 
     //Take NFT api data and save relevant info to firestore.
@@ -223,8 +228,38 @@ function App() {
         setApes(tempApes.concat());
     }
 
+    // Unlist an ape from the market.
+    async function unlistApe(ape) {
+        
+        //Prevent attempting to add an ape without an account.
+        if (userInfo === null) return;
+
+        // Remove the listing from the store.
+        removeApeFromStore(ape);
+
+        const uid = userInfo.uid;
+
+        const docRef = doc(db, "users", uid);
+        const docSnap = await getDoc(docRef);
+
+        let tempApes = userApes;
+        const index = tempApes.indexOf(ape);
+
+        // Set the chosen ape to unlisted.
+        tempApes[index].listed = false;
+
+        setUserApes(tempApes);
+
+        //Update firestore db with user's apes.
+        await updateDoc(docRef, {
+            apes: tempApes
+        });
+
+        playMessage('Ape unlisted!');
+    }
+
     //List ape on market.
-    async function putApeOnMarket(ape) {
+    async function putApeOnMarket(ape, price) {
         //Prevent attempting to add an ape without an account.
         if (userInfo === null) return;
 
@@ -233,14 +268,12 @@ function App() {
         await setDoc(doc(db, 'apes', ape.id), {
             attributes: ape.attributes,
             img: ape.img,
-            cost: ape.cost,
+            cost: price,
             id: ape.id,
             seller: uid,
             sellerName: userInfo.displayName,
             listed: true
         });
-
-
 
         //Update local ape array with new ape.
         let tempApes = apes;
@@ -248,6 +281,7 @@ function App() {
         tempApe.seller = uid;
         tempApe.sellerName = userInfo.displayName;
         tempApe.listed = true;
+        tempApe.cost = price;
 
         tempApes.unshift(tempApe);
         setApes(tempApes);
@@ -268,13 +302,27 @@ function App() {
           apes: tempUserApes
         });
 
-        console.log('ape listed!');
+        playMessage('Ape listed!');
+        console.log('price' + price);
 
-    } 
+    }
+
+    // Give the user a passed message, similar to an alert.
+    const playMessage = (message) => {
+        setMessage(message);
+
+        const msg = document.getElementById('message');
+        msg.classList.remove('shown');
+        void msg.offsetWidth;
+        msg.classList.add('shown');
+    }
 
     return (
         <BrowserRouter>
             <div id="app">
+                <div id='message'>
+                    {message}
+                </div>
 
                 <Header 
                     info={userInfo}
@@ -282,9 +330,11 @@ function App() {
                 />
 
                 <Routes>
-                    <Route path='/' element={<Assets 
+                    <Route path='/js-final-project' element={<Assets 
                         userApes={userApes}
                         putApeOnMarket={putApeOnMarket}
+                        unlistApe={unlistApe}
+                        userInfo={userInfo}
                     />} />
                     <Route path='/market' element={<Market 
                         updateCoins={updateCoins}
@@ -293,11 +343,13 @@ function App() {
                         apes={apes}
                         addApeToAccount={addApeToAccount}
                         removeApeFromStore={removeApeFromStore}
+                        playMessage={playMessage}
+                        userInfo={userInfo}
                     />} />
                     <Route path='/settings' element={<Settings 
                         info={userInfo}
-                        getInfo={getInfo}
                         signIn={signIn}
+                        signUserOut={signUserOut}
                         loadData={loadData}
                         updateCoins={() => updateCoins(100)}  
                     />} />

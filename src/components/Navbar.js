@@ -1,6 +1,6 @@
 import React from "react";
 import {Link} from "react-router-dom";
-
+import { memo } from "react";
 
 import settingsImg from "../art/settings.svg";
 import smileImg from "../art/smile.svg";
@@ -24,8 +24,8 @@ const Navbar = () => {
     return (
         <div id='navbar'>
             
-            <Link onClick={() => setCurrentTab('navassets')} className='navitem' to='/' style={{ textDecoration: 'none' }}>
-                <div id='navassets'>
+            <Link onClick={() => setCurrentTab('navassets')} className='navitem' to='/js-final-project' style={{ textDecoration: 'none' }}>
+                <div id='navassets' className='selected'>
                     <img src={briefcaseImg} alt=""></img>
                 </div>
             </Link>
@@ -50,4 +50,4 @@ const Navbar = () => {
     )
 }
 
-export default Navbar;
+export default memo(Navbar);

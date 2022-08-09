@@ -126,6 +126,24 @@ Aug 3rd, 2022
 
     Finished my "last" cigarette yesterday. We'll see how today goes, but so far so good. I felt real shit when I switched from vaping to smoking, and I don't feel bad in the same way right now. Gotta keep working on this project, cause at this point I think I'm gonna wrap it up today. Fix the most necessary and fixible issues, add any reasonably simple features to add, and then move on. Daddy's running out of money and needs a job.
 
+Aug 7, 2022
+
+    Spent the 4th reading up on the next sections for advanced HTML and CSS, as my brain was all hurty from quitting nicotine. I spent the 4th helping my grandma out in the yard, and yesterday my family did a Masterchef/AGT thing that was kinda fun. 
+
+    Feeling decently better today, and I think after spending half of the day reading through the advanced HTML/CSS section I'm ready to more or less finish up this final project for JS. After that I can move on to my portfolio, which I can only imagine will take vastly less time than this has. Knock on wood.
+
+    God I fucking hate react so god damn much. Hey react, can I update this value real quick? Won't affect the market display at all. React: What's that? Oh fuck no, I'll just redraw every single item in this unrelated section of the component so that any class you add to its items is constantly reset, that what you wanted? Sheesh. Got it done with a workaround anyway.
+
+Aug 8th, 2022
+
+    I succesfully quit quitting nicotine last night. Got myself some menthol apple juice, and this morning felt really in the mood to program shit. Started the day off by actually learning how to memoize in react. Also, the docs explicitly tell you not to use memo for preventing rerenders, but a lot of the internet seems to disagree. Either way, got my shit working as intended with about an hour after dicking around with it for days. Feels good man.
+
+    Things are going like stupid smoothly. Added the styling I wanted to for both the market and assets tabs, and then made sure all the basic functionality was working. So you can now easily list, unlist, change price, and purchase apes. Might not work seamlessly, but it does work more or less as intended and that is cool as fuck. Now you can play through the clicker game, make some cash, and then spend that cash as you see fit. Pretty cool!
+
+    Recursion is a bitch.
+
+    What a productive day. The only minor hangup was accidentally creating an endless loop when signing out because I named the sign out function the same as what firestore named it. Other than that, I now have text encouraging users to sign in if they aren't, and I've used the placeholder icon in a few places where the google icon could be. Tomorrow I'll get finish up the settings page, clean up the code, and move on to my portfolio.
+
 
 
 
