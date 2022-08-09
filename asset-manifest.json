@@ -1,13 +1,22 @@
 {
   "files": {
-    "main.css": "/js-final-project/static/css/main.a017d360.css",
-    "main.js": "/js-final-project/static/js/main.f037a85e.js",
+    "main.css": "/js-final-project/static/css/main.2dbff8fb.css",
+    "main.js": "/js-final-project/static/js/main.56621e28.js",
+    "static/media/cafe.ttf": "/js-final-project/static/media/cafe.eacd87871e9a39013626.ttf",
+    "static/media/magnawave.otf": "/js-final-project/static/media/magnawave.b6121bdd104eba5c4a6e.otf",
+    "static/media/coin.png": "/js-final-project/static/media/coin.54f104f12f56fafbcaa6.png",
+    "static/media/placeholder.png": "/js-final-project/static/media/placeholder.ca7fd030956561cab349.png",
+    "static/media/Google__G__Logo.svg": "/js-final-project/static/media/Google__G__Logo.66ae25beb1eb0655ac594978ee31ddb2.svg",
+    "static/media/settings.svg": "/js-final-project/static/media/settings.8588567d7abe6a39f8ce830321ab1234.svg",
     "index.html": "/js-final-project/index.html",
-    "main.a017d360.css.map": "/js-final-project/static/css/main.a017d360.css.map",
-    "main.f037a85e.js.map": "/js-final-project/static/js/main.f037a85e.js.map"
+    "static/media/smile.svg": "/js-final-project/static/media/smile.27f2efd881fad623383bc8231c3708bb.svg",
+    "static/media/shopping-cart.svg": "/js-final-project/static/media/shopping-cart.33ce5d1587bf4a7a971bb64d9418e125.svg",
+    "static/media/briefcase.svg": "/js-final-project/static/media/briefcase.21248a068c385cec74542746ea8c5e8c.svg",
+    "main.2dbff8fb.css.map": "/js-final-project/static/css/main.2dbff8fb.css.map",
+    "main.56621e28.js.map": "/js-final-project/static/js/main.56621e28.js.map"
   },
   "entrypoints": [
-    "static/css/main.a017d360.css",
-    "static/js/main.f037a85e.js"
+    "static/css/main.2dbff8fb.css",
+    "static/js/main.56621e28.js"
   ]
 }
