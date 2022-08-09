@@ -107,7 +107,6 @@ const Market = (props) => {
         //can afford it. Then move the ape from the store to the user.
 
         if (props.coins >= info.cost) {
-            console.log('purchased!');
             props.updateCoins(info.cost * -1);
             props.addApeToAccount(info);
             props.removeApeFromStore(info);

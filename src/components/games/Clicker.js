@@ -14,7 +14,6 @@ import ProgressRing from '../ProgressRing';
 import uniqid from "uniqid";
 
 import tenshiGif from "../../art/tenshi.gif";
-import rodGif from "../../art/rod_ani.gif";
 import gnoxideImg from "../../art/gnoxide.png";
 import carbonantImg from "../../art/carbonant.png";
 import dioxidolatryImg from "../../art/dioxidolatry.png";

@@ -45,14 +45,10 @@ function App() {
 
     //Load user info once the data has been updated.
     onAuthStateChanged(auth, (user) => {
-        //console.log(userInfo);
 
         if (user && userInfo === null) {
-            //console.log('signed in')
 
             const userData = getAuth().currentUser; 
-
-            console.log('auth state changed, userinfo: ' + userInfo);
 
             //Update session's user info and load their data.
             setUserInfo(userData);
@@ -120,10 +116,7 @@ function App() {
     // Sign out the user.
     async function signUserOut() {
         
-
         const auth = getAuth();
-        console.log('auth:');
-        console.log(auth);
 
         signOut(auth).then(() => {
             setUserInfo(null);
@@ -136,7 +129,6 @@ function App() {
 
     //Take NFT api data and save relevant info to firestore.
     const saveApes = (apes) => {
-        //console.log(apes[0]);
 
         let newApes = [];
 
@@ -154,7 +146,6 @@ function App() {
 
         //Store each ape in the firestore db.
         newApes.forEach(async function (ape) {
-            console.log('saving' + ape.id);
 
             await setDoc(doc(db, 'apes', ape.id), {
                 attributes: ape.attributes,
@@ -204,8 +195,6 @@ function App() {
         await updateDoc(docRef, {
           apes: tempApes
         });
-
-        console.log('ape purchased!');
     }
 
     //Remove an ape from the firestore db market.
@@ -214,8 +203,6 @@ function App() {
         if (userInfo === null) return;
 
         await deleteDoc(doc(db, "apes", ape.id));
-
-        console.log('ape deleted!');
         
         //Remove ape from locally displayed ape market.
         let tempApes = apes;
@@ -268,7 +255,7 @@ function App() {
         await setDoc(doc(db, 'apes', ape.id), {
             attributes: ape.attributes,
             img: ape.img,
-            cost: price,
+            cost: parseInt(price),
             id: ape.id,
             seller: uid,
             sellerName: userInfo.displayName,
@@ -281,7 +268,7 @@ function App() {
         tempApe.seller = uid;
         tempApe.sellerName = userInfo.displayName;
         tempApe.listed = true;
-        tempApe.cost = price;
+        tempApe.cost = parseInt(price);
 
         tempApes.unshift(tempApe);
         setApes(tempApes);
@@ -290,8 +277,6 @@ function App() {
         let tempUserApes = userApes;
         const index = tempUserApes.indexOf(ape);
         tempUserApes[index] = tempApe;
-
-        console.log(index, tempApe);
 
         setUserApes(tempUserApes);
 
@@ -303,8 +288,6 @@ function App() {
         });
 
         playMessage('Ape listed!');
-        console.log('price' + price);
-
     }
 
     // Give the user a passed message, similar to an alert.
@@ -352,6 +335,8 @@ function App() {
                         signUserOut={signUserOut}
                         loadData={loadData}
                         updateCoins={() => updateCoins(100)}  
+                        coins={coins}
+                        userApes={userApes}
                     />} />
 
                     <Route path='/games' element={<Games

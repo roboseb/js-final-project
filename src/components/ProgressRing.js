@@ -22,7 +22,6 @@ const ProgressRing = (props) => {
 
     const updateProgress = () => {
         setTimeout(() => {
-            //console.log('udpating');
             setStrokeDashOffset(circumference - 0 / 100 * circumference);
         }, 50);
     }

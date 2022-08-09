@@ -144,7 +144,9 @@ Aug 8th, 2022
 
     What a productive day. The only minor hangup was accidentally creating an endless loop when signing out because I named the sign out function the same as what firestore named it. Other than that, I now have text encouraging users to sign in if they aren't, and I've used the placeholder icon in a few places where the google icon could be. Tomorrow I'll get finish up the settings page, clean up the code, and move on to my portfolio.
 
+Aug 9th, 2022
 
+    Welcome to the actual last day. I believe all that's really left is to style the settings page and then have some form of media query for desktop users. Also, my right wrist is fucked.
 
 
 ---To-Do---
