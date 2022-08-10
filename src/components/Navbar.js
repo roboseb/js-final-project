@@ -24,7 +24,7 @@ const Navbar = () => {
     return (
         <div id='navbar'>
             
-            <Link onClick={() => setCurrentTab('navassets')} className='navitem' to='/js-final-project' style={{ textDecoration: 'none' }}>
+            <Link onClick={() => setCurrentTab('navassets')} className='navitem' to='/' style={{ textDecoration: 'none' }}>
                 <div id='navassets' className='selected'>
                     <img src={briefcaseImg} alt=""></img>
                 </div>

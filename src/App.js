@@ -13,6 +13,7 @@ import { initializeApp } from "firebase/app";
 import { getFirestore, collection, getDoc, getDocs, addDoc, deleteDoc, setDoc, updateDoc, doc } from 'firebase/firestore';
 import { GoogleAuthProvider, getAuth, signOut, signInWithRedirect, getRedirectResult, onAuthStateChanged} from "firebase/auth";
 import { getDatabase, ref, set, get, child } from "firebase/database";
+import { HashRouter } from "react-router-dom";
 
 
 
@@ -301,7 +302,6 @@ function App() {
     }
 
     return (
-        <BrowserRouter>
             <div id="app">
                 <div id='message'>
                     {message}
@@ -313,7 +313,7 @@ function App() {
                 />
 
                 <Routes>
-                    <Route path='/js-final-project' element={<Assets 
+                    <Route exact path='/' element={<Assets 
                         userApes={userApes}
                         putApeOnMarket={putApeOnMarket}
                         unlistApe={unlistApe}
@@ -349,8 +349,6 @@ function App() {
 
                 <Navbar />
             </div>
-        </BrowserRouter>
-
   );
 }
 
