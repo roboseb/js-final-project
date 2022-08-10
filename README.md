@@ -1,5 +1,37 @@
 #js-final-project
 
+---Features---
+
+-An app that lets you funge tokens
+
+-Apes pulled in from an NFT API and the added to a firbase DB
+
+-Sign with google to buy apes
+
+-Play a small game to earn money for apes
+
+-Purchase apes, and then relist them at any price desired
+
+-Works great on mobile and fine on desktop
+
+-Clicker game with unique mechanics
+
+-Mine various nodes to craft items
+
+-Craft multiple in a row to increase the amount crafted
+
+-Lost all items unless you can click on an orange node!
+
+-Mysterious recipes for items
+
+-Use items before playing a round for various boosts
+
+-Can you crack the planet?
+
+-Can you crack the planet twice?
+
+-Lots of cute little animations as always
+
 ---Devlog---
 
 July 15th, 2022
@@ -148,6 +180,7 @@ Aug 9th, 2022
 
     Welcome to the actual last day. I believe all that's really left is to style the settings page and then have some form of media query for desktop users. Also, my right wrist is fucked.
 
+    Shit's done, but GH pages is fucking with me for some reason. Not sure what I did. Will have to push the changes later, including a hashrouter and title update.
 
 ---To-Do---
 
